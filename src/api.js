@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'http://10.21.237.21:5000',
+  baseURL: 'https://musicback-0vef.onrender.com',
 });
 
 export function login(identifiant, password) {
