@@ -15,7 +15,9 @@
             
         </div>
     </div>
-    <YoutubePlayer ref="youtubePlayer" id="player" @closeEvent="close" @searchEvent="search"/>
+    <div id="divPlayer">
+        <YoutubePlayer ref="youtubePlayer" id="player" @closeEvent="close" @searchEvent="search"/>
+    </div>
 </template>
 
 <script>
@@ -62,17 +64,16 @@ export default ({
 
                 div.onclick = () => {
                     this.video_playing = true
-                    this.$refs.youtubePlayer.playNewVideo(item[2], item[6]);
+                    this.$refs.youtubePlayer.playNewVideo(item["id_yt"]);
                     document.getElementsByTagName("body")[0].style.overflow = "hidden"
-                    document.getElementById("player").style.display = "block"
-                    document.getElementById("player").classList.remove("playerMiniature")
-                    document.getElementById("player").classList.remove("playerMiniatureMobile")
+                    document.getElementById("divPlayer").style.display = "block"
+                    document.getElementById("divPlayer").classList.remove("playerMiniature")
+                    document.getElementById("divPlayer").classList.remove("playerMiniatureMobile")
                     document.getElementById("blur").style.display = "block"
                     document.getElementById("blur").style.height = document.getElementById("searchResult").clientHeight + "px"
                     if (this.device == "Mobile") {
                         document.getElementById("searchResult").style.overflow = "hidden"
                     }
-                    insertMusic({"id_yt": item[2], "searchStr": item[6], "Clicked": true})
                     /* listenMusic({"id_yt": item.id, "artist": artistAndTitle.data[0], "title": artistAndTitle.data[1], "click": true}) */
                 }
 
@@ -84,10 +85,10 @@ export default ({
                 divDesc.className = "divDesc"
 
                 let title = document.createElement("h2")
-                title.textContent = item[6]
+                title.textContent = item["Title"]
                 
                 let artist = document.createElement("h2")
-                artist.textContent = item[7]
+                artist.textContent = item["Artist"]
 
                 divDesc.appendChild(title)
                 divDesc.appendChild(artist)
@@ -104,8 +105,17 @@ export default ({
                 this.video_playing = false
                 document.getElementById("blur").style.display = "none"
                 document.getElementsByTagName("body")[0].style.overflow = "visible"
-                if (this.device == "Desktop") document.getElementById("player").classList.add("playerMiniature")
-                else document.getElementById("player").classList.add("playerMiniatureMobile")
+                if (this.device == "Desktop") {
+                    document.getElementById("divPlayer").classList.add("playerMiniature")
+                    document.getElementById("player").style.top = 0
+                    document.getElementById("player").style.bottom = 0
+                    document.getElementById("player").style.right = 0
+                    document.getElementById("player").style.left = 0
+                    document.getElementById("player").style.width = "100%"
+                    document.getElementById("player").style.height = "100%"
+                    document.getElementById("player").style.position = "relative"
+                }
+                else document.getElementById("divPlayer").classList.add("playerMiniatureMobile")
             }
         },
         async APIytSearch(input) {
@@ -157,8 +167,8 @@ export default ({
                                 this.$refs.youtubePlayer.playNewVideo(item.id, item["titre"]);
                                 document.getElementsByTagName("body")[0].style.overflow = "hidden"
                                 document.getElementById("player").style.display = "block"
-                                document.getElementById("player").classList.remove("playerMiniature")
-                                document.getElementById("player").classList.remove("playerMiniatureMobile")
+                                document.getElementById("divPlayer").classList.remove("playerMiniature")
+                                document.getElementById("divPlayer").classList.remove("playerMiniatureMobile")
                                 document.getElementById("blur").style.display = "block"
                                 document.getElementById("blur").style.height = document.getElementById("searchResult").clientHeight + "px"
                                 if (this.device == "Mobile") {
@@ -251,8 +261,16 @@ html{
     margin-left: 10px;
 }
 
-#player {
+#divPlayer{
     display: none;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    position: absolute;
+}
+
+#player {
     position: fixed;
     left: 0;
     right: 0;

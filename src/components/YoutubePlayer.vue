@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button @click="$emit('closeEvent')" id="close">close</button>
+    <button @click="$emit('closeEvent')" id="close">-</button>
     <div id="youtube-player"></div>
   </div>
 </template>
@@ -76,7 +76,7 @@ export default {
         console.log("playList set to :", this.playList)
     },
     // Change la vidéo avec un nouvel ID
-    playNewVideo(videoId, videoName) {
+    playNewVideo(videoId, videoName="") {
         if (this.player) {
             if (videoId == ""){
               getSimilarTrack(this.videoName)

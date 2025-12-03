@@ -11,7 +11,7 @@
             <h2>Id</h2>
             <input type="text" id="identifiant"/>
             <h2>Password</h2>
-            <input type="password" id="password"/>
+            <input type="password" id="password" @keypress.enter="enter"/>
             <button @click="enter">Enter</button>
         </div>
     </div>
