@@ -1,15 +1,25 @@
-import { createMemoryHistory, createRouter } from 'vue-router'
+import { createWebHistory, createRouter } from 'vue-router'
+
 
 import HomeView from '../views/Home.vue'
 import LoginView from '../views/Login.vue'
 
 const routes = [
-  { path: '/', component: LoginView },
-  { path: '/search', component: HomeView, props: { userConnected: true }},
+    { 
+        path: '/', 
+        component: LoginView, 
+        name: 'Login'
+    },
+    { 
+        path: '/home', 
+        component: HomeView, 
+        name: 'Home',
+        props: { userConnected: true }
+    },
 ]
 
 const router = createRouter({
-  history: createMemoryHistory(),
+  history: createWebHistory(),
   routes,
 })
 

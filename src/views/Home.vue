@@ -5,6 +5,7 @@
             <input type="text" id="search" @keyup.enter="search" ref="searchInput" value="21 pilots">
             <button @click="search(true)">Search</button>
         </div>
+        <button @click="logout">Déconnexion</button>
     </div>
     <div id="searchResult"></div>
     <div id="home">
@@ -118,6 +119,9 @@ export default ({
                 else document.getElementById("divPlayer").classList.add("playerMiniatureMobile")
             }
         },
+        logout(){
+            this.$router.push('/')
+        },
         async APIytSearch(input) {
             // Construire l'URL avec les paramètres
             const url = `${this.API_URL}?part=snippet&type=video&q=${encodeURIComponent(input)}&key=${this.API_KEY}&maxResults=100`;
@@ -166,7 +170,7 @@ export default ({
                                 this.video_playing = true
                                 this.$refs.youtubePlayer.playNewVideo(item.id, item["titre"]);
                                 document.getElementsByTagName("body")[0].style.overflow = "hidden"
-                                document.getElementById("player").style.display = "block"
+                                document.getElementById("divPlayer").style.display = "block"
                                 document.getElementById("divPlayer").classList.remove("playerMiniature")
                                 document.getElementById("divPlayer").classList.remove("playerMiniatureMobile")
                                 document.getElementById("blur").style.display = "block"
@@ -224,6 +228,11 @@ export default ({
 </script>
 
 <style scopped>
+
+html, body, #app, v-app, v-main{
+    height: 100%;
+}
+
 html{
     background-color: aliceblue;
 }
@@ -247,13 +256,13 @@ html{
     display: flex;
     flex-direction: row;
     align-items: center;
-    width: 50%;
+    width: 25%;
     margin-top: 10px;
     margin-bottom: 10px;
     border: 1px solid black;
     border-radius: 15px;
     padding: 10px;
-    background-color: burlywood;
+    background-color: #00ebff;
     cursor: pointer;
 }
 
@@ -315,6 +324,11 @@ html{
         right: 100px; 
         width: calc(100% - 200px); 
         height: calc(100% - 200px);
+    }
+
+    #historique{
+        overflow-y: auto; 
+        max-height: calc(100vh - 60px);
     }
 }
 </style>

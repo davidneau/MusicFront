@@ -28,11 +28,21 @@ body, html {
   margin: 0;
 }
 
+body {
+  background-image: url('../assets/Background_Music.jpg');
+  background-size: cover;       /* L’image couvre toute la page */
+  background-position: center;  /* Centrée */
+  background-repeat: no-repeat; /* Pas de répétition */
+  height: 100vh;
+  margin: 0;
+}
+
+
 #bannerSearch {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #EEEEEE;
+    background-color: #00a6ef;
     height: 60px;
     position: sticky;
     left: 0;

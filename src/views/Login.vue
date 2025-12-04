@@ -36,7 +36,7 @@ export default ({
             })
             .then(profile => {
                 console.log(profile.data); // Affiche les infos de l'utilisateur
-                this.$router.push('/search')
+                this.$router.push('home')
             })
             .catch(err => {
                 console.error('Erreur:', err.response);
@@ -54,15 +54,15 @@ h1, h2 {
 }
 
 #divLogin{
-    margin-left: 35%;
-    width: 30%;
-    margin-top: 150px;
-    height: 400px;
+    margin-left: 45%;
+    width: 10%;
+    margin-top: 200px;
+    height: 250px;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
-    background-color: coral;
+    background-color: #00ebff;
     border-radius: 15px;
 }
 
