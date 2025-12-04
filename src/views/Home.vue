@@ -107,14 +107,8 @@ export default ({
                 document.getElementById("blur").style.display = "none"
                 document.getElementsByTagName("body")[0].style.overflow = "visible"
                 if (this.device == "Desktop") {
-                    document.getElementById("divPlayer").classList.add("playerMiniature")
-                    document.getElementById("player").style.top = 0
-                    document.getElementById("player").style.bottom = 0
-                    document.getElementById("player").style.right = 0
-                    document.getElementById("player").style.left = 0
-                    document.getElementById("player").style.width = "100%"
-                    document.getElementById("player").style.height = "100%"
-                    document.getElementById("player").style.position = "relative"
+                    document.getElementById("divPlayer").classList.add("divPlayerMiniature")
+                    document.getElementById("player").classList.add("playerMiniature")
                 }
                 else document.getElementById("divPlayer").classList.add("playerMiniatureMobile")
             }
@@ -167,11 +161,13 @@ export default ({
                             div.className = "searchOneResult"
 
                             div.onclick = () => {
+                                console.log("clic")
                                 this.video_playing = true
                                 this.$refs.youtubePlayer.playNewVideo(item.id, item["titre"]);
                                 document.getElementsByTagName("body")[0].style.overflow = "hidden"
                                 document.getElementById("divPlayer").style.display = "block"
-                                document.getElementById("divPlayer").classList.remove("playerMiniature")
+                                document.getElementById("divPlayer").classList.remove("divPlayerMiniature")
+                                document.getElementById("player").classList.remove("playerMiniature")
                                 document.getElementById("divPlayer").classList.remove("playerMiniatureMobile")
                                 document.getElementById("blur").style.display = "block"
                                 document.getElementById("blur").style.height = document.getElementById("searchResult").clientHeight + "px"
@@ -300,11 +296,21 @@ html{
     display: none;
 }
 
-.playerMiniature{
+.divPlayerMiniature{
     top: calc(100% - 300px) !important;
     left: calc(100% - 500px) !important;
     width: 400px !important;
     height: 200px !important;
+}
+
+.playerMiniature{
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    position: relative !important;
 }
 
 .playerMiniatureMobile{

@@ -66,4 +66,8 @@ h1, h2 {
     border-radius: 15px;
 }
 
+input{
+    width: 90% !important;
+}
+
 </style>
