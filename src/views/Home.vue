@@ -1,7 +1,8 @@
 <template>
     <div id="blur"></div>
     <div id="bannerSearch">
-        <div v-if="userConnected">
+        <div>Logo</div>
+        <div v-if="userConnected" id="searchDiv">
             <input type="text" id="search" @keyup.enter="search" ref="searchInput" value="21 pilots">
             <button @click="search(true)">Search</button>
         </div>
@@ -54,7 +55,7 @@ export default ({
             let histo = await loadHistorique()
             let replay = await loadReplay()
 
-            console.log(histo)
+            histo.data.splice(20)
             console.log(replay)
 
             histo.data.forEach(item => {
@@ -79,7 +80,7 @@ export default ({
                 }
 
                 let img = document.createElement("img")
-                img.src = item["img"]
+                img.src = item["StatMusic3"]["Image"]
                 div.appendChild(img)
 
                 let divDesc = document.createElement("div")
@@ -90,9 +91,13 @@ export default ({
                 
                 let artist = document.createElement("h2")
                 artist.textContent = item["Artist"]
+                
+                let album = document.createElement("h2")
+                album.textContent = item["StatMusic3"]["Album"]
 
                 divDesc.appendChild(title)
                 divDesc.appendChild(artist)
+                divDesc.appendChild(album)
                 
 
                 div.appendChild(divDesc)
@@ -149,12 +154,11 @@ export default ({
                     // Afficher les résultats
                     console.log('Résultats de la recherche :', response.data);
 
-                    this.$refs.youtubePlayer.setPlayList(response.data);
+                    //this.$refs.youtubePlayer.setPlayList(response.data);
                     
                     document.getElementById("searchResult").innerHTML = ""
 
                     if (fillDivSearch){
-                        // Exemple d'affichage de titres et de vidéos
                         response.data.forEach(item => {
                             let div = document.createElement("div")
                             div.id = item.id
@@ -174,7 +178,12 @@ export default ({
                                 if (this.device == "Mobile") {
                                     document.getElementById("searchResult").style.overflow = "hidden"
                                 }
-                                insertMusic({"id_yt": item.id, "searchStr": item["titre"], "Clicked": true})
+                                insertMusic({
+                                    "id_yt": item.id, 
+                                    "searchStr": item["titre"],
+                                    "img": item["img"], 
+                                    "Clicked": true
+                                })
                                 /* listenMusic({"id_yt": item.id, "artist": artistAndTitle.data[0], "title": artistAndTitle.data[1], "click": true}) */
                             }
 
@@ -266,6 +275,11 @@ html{
     margin-left: 10px;
 }
 
+#searchDiv{
+    display: flex;
+    flex-direction: row;
+}
+
 #divPlayer{
     display: none;
     width: 100%;
@@ -335,6 +349,9 @@ html{
     #historique{
         overflow-y: auto; 
         max-height: calc(100vh - 60px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 }
 </style>

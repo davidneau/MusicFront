@@ -40,7 +40,8 @@ body {
 
 #bannerSearch {
     display: flex;
-    justify-content: center;
+    flex-direction: row;
+    justify-content: space-between;
     align-items: center;
     background-color: #00a6ef;
     height: 60px;

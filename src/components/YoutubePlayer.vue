@@ -73,7 +73,7 @@ export default {
     },
     setPlayList(playList){
         this.playList = playList
-        console.log("playList set to :", this.playList)
+        //console.log("playList set to :", this.playList)
     },
     // Change la vidéo avec un nouvel ID
     playNewVideo(videoId, videoName="") {

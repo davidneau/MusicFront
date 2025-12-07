@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const API = axios.create({
-  //baseURL: 'http://127.0.0.1:5000',
-  baseURL: 'https://musicback-0vef.onrender.com',
+  baseURL: 'http://127.0.0.1:5000',
+  //baseURL: 'https://musicback-0vef.onrender.com',
 });
 
 export function login(identifiant, password) {
@@ -80,7 +80,6 @@ export function getSimilarTrack(track) {
 
 API.interceptors.request.use(config => {
     const token = localStorage.getItem('token');
-    console.log("token: ", token)
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
