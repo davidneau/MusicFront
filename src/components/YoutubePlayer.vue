@@ -1,6 +1,10 @@
 <template>
   <div>
-    <button @click="$emit('closeEvent')" id="close">-</button>
+    <div id="buttonDiv">
+        <button @click="$emit('reduireEvent')" id="reduire">-</button>
+        <button @click="$emit('agrandireEvent')" id="agrandir">⛶</button>
+        <button @click="$emit('closeEvent')" id="close">X</button>
+    </div>
     <div id="youtube-player"></div>
   </div>
 </template>
@@ -125,16 +129,35 @@ window.onYouTubeIframeAPIReady = function() {
     height: 100%;
 }
 
-#close{
+#buttonDiv{
   position: absolute;
   top: 5px;
   right: 5px;
+  width: 20%;
+  height: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
 }
+
+
+#buttonDiv button{
+    height: 20px;
+    width: 20px;
+    padding: 0;
+}
+
+
 
 @media screen and (min-width: 428px)  {
     
-  #close{
+  #buttonDiv{
     top: -30px;
+  }
+  
+  #buttonDiv{
+    width: 100px;
   }
 }
 

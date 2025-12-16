@@ -54,8 +54,8 @@ h1, h2 {
 }
 
 #divLogin{
-    margin-left: 45%;
-    width: 10%;
+    margin-left: 25%;
+    width: 50%;
     margin-top: 200px;
     height: 250px;
     display: flex;
@@ -69,5 +69,18 @@ h1, h2 {
 input{
     width: 90% !important;
 }
-
+@media screen and (min-width: 428px)  {
+    #divLogin{
+        margin-left: 45%;
+        width: 10%;
+        margin-top: 200px;
+        height: 250px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        background-color: #00ebff;
+        border-radius: 15px;
+    }
+}
 </style>

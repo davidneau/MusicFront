@@ -18,7 +18,7 @@
         </div>
     </div>
     <div id="divPlayer">
-        <YoutubePlayer ref="youtubePlayer" id="player" @closeEvent="close" @searchEvent="search"/>
+        <YoutubePlayer ref="youtubePlayer" id="player" @closeEvent="close" @reduireEvent="reduire" @agrandireEvent="agrandir" @searchEvent="search"/>
     </div>
 </template>
 
@@ -49,7 +49,7 @@ export default ({
             if (largeurEcran > 428) this.device = "Desktop"
 
             document.getElementById("blur").onclick = () => {
-                this.close()
+                this.reduire()
             }
 
             let histo = await loadHistorique()
@@ -69,6 +69,9 @@ export default ({
                     this.$refs.youtubePlayer.playNewVideo(item["id_yt"]);
                     document.getElementsByTagName("body")[0].style.overflow = "hidden"
                     document.getElementById("divPlayer").style.display = "block"
+                    document.getElementById("player").style.display = "block"
+                    document.getElementById("divPlayer").style.visibility = "visible"
+                    document.getElementById("player").style.visibility = "visible"
                     document.getElementById("divPlayer").classList.remove("playerMiniature")
                     document.getElementById("divPlayer").classList.remove("playerMiniatureMobile")
                     document.getElementById("blur").style.display = "block"
@@ -105,18 +108,37 @@ export default ({
                 document.getElementById("historique").appendChild(div)
             });
         },
-        close(){
-            console.log(this.video_playing)
+        agrandir(){
             if (this.video_playing) {
-                this.video_playing = false
+                document.getElementById("blur").style.display = "block"
+                document.getElementsByTagName("body")[0].style.overflow = "hidden"
+                if (this.device == "Desktop") {
+                    document.getElementById("divPlayer").classList.remove("divPlayerMiniature")
+                }
+                else {
+                    document.getElementById("divPlayer").classList.remove("playerMiniatureMobile")
+                }
+                document.getElementById("player").classList.remove("playerMiniature")
+            }
+        },
+        reduire(){
+            if (this.video_playing) {
                 document.getElementById("blur").style.display = "none"
                 document.getElementsByTagName("body")[0].style.overflow = "visible"
                 if (this.device == "Desktop") {
                     document.getElementById("divPlayer").classList.add("divPlayerMiniature")
-                    document.getElementById("player").classList.add("playerMiniature")
                 }
-                else document.getElementById("divPlayer").classList.add("playerMiniatureMobile")
+                else {
+                    document.getElementById("divPlayer").classList.add("playerMiniatureMobile")
+                }
+                document.getElementById("player").classList.add("playerMiniature")
             }
+        },
+        close(){
+            document.getElementById("blur").style.display = "block"
+            document.getElementById("divPlayer").style.visibility = "hidden"
+            document.getElementById("player").style.visibility = "hidden"
+            this.$refs.youtubePlayer.player.pauseVideo()
         },
         logout(){
             this.$router.push('/')
@@ -228,6 +250,7 @@ export default ({
     },
     async mounted() {
         this.init()
+        document.title = 'MusicDA';
     }
 });
 </script>
@@ -261,7 +284,7 @@ html{
     display: flex;
     flex-direction: row;
     align-items: center;
-    width: 25%;
+    width: 90%;
     margin-top: 10px;
     margin-bottom: 10px;
     border: 1px solid black;
@@ -288,17 +311,6 @@ html{
     left: 0;
     position: absolute;
 }
-
-#player {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 3;
-}
-
 #blur{
     width: 100vw;
     height: 100vh;
@@ -308,13 +320,6 @@ html{
     opacity: 0.5;
     filter: blur(100px);
     display: none;
-}
-
-.divPlayerMiniature{
-    top: calc(100% - 300px) !important;
-    left: calc(100% - 500px) !important;
-    width: 400px !important;
-    height: 200px !important;
 }
 
 .playerMiniature{
@@ -328,12 +333,33 @@ html{
 }
 
 .playerMiniatureMobile{
-    bottom: 0 !important;
-    left: 30% !important;
+    top: initial !important;
+    left: initial !important;
+    right: 10px !important;
+    bottom: 10px !important;
     width: 70% !important;
     height: 200px !important;
 }
 
+
+#player {
+    top: 20px;
+    bottom: 20px;
+    left: 20px;
+    right: 20px; 
+    width: calc(100vw - 40px); 
+    height: calc(100vh - 40px);
+    position: absolute;
+}
+
+
+#historique{
+    overflow-y: auto; 
+    max-height: calc(100vh - 60px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
 @media screen and (min-width: 428px)  {
     
@@ -345,13 +371,25 @@ html{
         width: calc(100% - 200px); 
         height: calc(100% - 200px);
     }
-
-    #historique{
-        overflow-y: auto; 
-        max-height: calc(100vh - 60px);
+    .searchOneResult {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
+        width: 25%;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        border: 1px solid black;
+        border-radius: 15px;
+        padding: 10px;
+        background-color: #00ebff;
+        cursor: pointer;
+    }
+
+    .divPlayerMiniature{
+        top: calc(100% - 300px) !important;
+        left: calc(100% - 500px) !important;
+        width: 400px !important;
+        height: 200px !important;
     }
 }
 </style>
