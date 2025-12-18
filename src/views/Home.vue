@@ -18,7 +18,7 @@
         </div>
     </div>
     <div id="divPlayer">
-        <YoutubePlayer ref="youtubePlayer" id="player" @closeEvent="close" @reduireEvent="reduire" @agrandireEvent="agrandir" @searchEvent="search"/>
+        <YoutubePlayer ref="youtubePlayer" id="player" :device="device" @closeEvent="close" @reduireEvent="reduire" @agrandireEvent="agrandir" @searchEvent="search"/>
     </div>
 </template>
 
@@ -47,6 +47,7 @@ export default ({
         async init(){
             let largeurEcran = window.innerWidth || document.documentElement.clientWidth;
             if (largeurEcran > 428) this.device = "Desktop"
+            else this.device == "Mobile"
 
             document.getElementById("blur").onclick = () => {
                 this.reduire()
@@ -70,16 +71,18 @@ export default ({
                     document.getElementsByTagName("body")[0].style.overflow = "hidden"
                     document.getElementById("divPlayer").style.display = "block"
                     document.getElementById("player").style.display = "block"
+                    if (this.device == "Mobile") {
+                        document.getElementById("divPlayer").classList.add("playerMiniatureMobile")
+                        document.getElementById("player").classList.add("playerMiniature")
+                    }
+                    else{
+                        document.getElementById("divPlayer").classList.remove("playerMiniature")
+                        document.getElementById("divPlayer").classList.remove("playerMiniatureMobile")
+                    }
                     document.getElementById("divPlayer").style.visibility = "visible"
                     document.getElementById("player").style.visibility = "visible"
-                    document.getElementById("divPlayer").classList.remove("playerMiniature")
-                    document.getElementById("divPlayer").classList.remove("playerMiniatureMobile")
                     document.getElementById("blur").style.display = "block"
                     document.getElementById("blur").style.height = document.getElementById("searchResult").clientHeight + "px"
-                    if (this.device == "Mobile") {
-                        document.getElementById("searchResult").style.overflow = "hidden"
-                    }
-                    /* listenMusic({"id_yt": item.id, "artist": artistAndTitle.data[0], "title": artistAndTitle.data[1], "click": true}) */
                 }
 
                 let img = document.createElement("img")
@@ -311,6 +314,16 @@ html{
     left: 0;
     position: absolute;
 }
+
+.playerFullScreen{
+    width: 100% !important;
+    height: 100% !important;
+    top: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    right: 0 !important;
+}
+
 #blur{
     width: 100vw;
     height: 100vh;

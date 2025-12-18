@@ -1,8 +1,8 @@
 <template>
   <div>
     <div id="buttonDiv">
-        <button @click="$emit('reduireEvent')" id="reduire">-</button>
-        <button @click="$emit('agrandireEvent')" id="agrandir">⛶</button>
+        <button @click="$emit('reduireEvent')" v-if="this.device=='Desktop'" id="reduire">-</button>
+        <button @click="$emit('agrandireEvent')" v-if="this.device=='Desktop'" id="agrandir">⛶</button>
         <button @click="$emit('closeEvent')" id="close">X</button>
     </div>
     <div id="youtube-player"></div>
@@ -14,6 +14,7 @@ import { insertMusic, getSimilarTrack } from '@/api';
 
 export default {
   name: "YoutubePlayer",
+  props: ["device"],
   data() {
     return {
       videoName: "",
