@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const API = axios.create({
-  //baseURL: 'http://127.0.0.1:5000',
-  baseURL: 'https://musicback-0vef.onrender.com',
+  baseURL: 'http://127.0.0.1:5000',
+  //baseURL: 'https://musicback-0vef.onrender.com',
 });
 
 export function login(identifiant, password) {
@@ -35,6 +35,24 @@ export function listenMusic(payload) {
 export function searchYT(searchStr) {
     console.log("searchYT")
     return API.get('/searchYT/' + searchStr, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+    });
+}
+
+export function getMusic(Artist, Title) {
+    console.log("searchYT")
+    return API.get('/getMusic/' + Artist + "-" + Title, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+    });
+}
+
+export function searchMusic(searchStr) {
+    console.log("searchMusic")
+    return API.get('/searchMusic/' + searchStr, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
         }

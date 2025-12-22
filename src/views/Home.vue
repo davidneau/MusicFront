@@ -1,5 +1,4 @@
 <template>
-    <div id="blur"></div>
     <div id="bannerSearch">
         <div>Logo</div>
         <div v-if="userConnected" id="searchDiv">
@@ -24,7 +23,7 @@
 
 <script>
 import YoutubePlayer from '../components/YoutubePlayer.vue';
-import { searchYT, insertMusic, loadHistorique, loadReplay } from '../api';
+import { searchMusic, loadHistorique, getMusic, loadReplay } from '../api';
 
 export default ({
     name: "MusicPage",
@@ -49,7 +48,9 @@ export default ({
             if (largeurEcran > 428) this.device = "Desktop"
             else this.device == "Mobile"
 
-            document.getElementById("blur").onclick = () => {
+            console.log("device :", this.device)
+
+            document.getElementById("divPlayer").onclick = () => {
                 this.reduire()
             }
 
@@ -65,9 +66,12 @@ export default ({
                 div.id = item[2]
                 div.className = "searchOneResult"
 
-                div.onclick = () => {
+                div.onclick = async () => {
                     this.video_playing = true
-                    this.$refs.youtubePlayer.playNewVideo(item["id_yt"]);
+
+                    let music = await getMusic(item["Artist"], item["Title"])
+                    
+                    this.$refs.youtubePlayer.playNewVideo(music.data["id_yt"]);
                     document.getElementsByTagName("body")[0].style.overflow = "hidden"
                     document.getElementById("divPlayer").style.display = "block"
                     document.getElementById("player").style.display = "block"
@@ -81,8 +85,6 @@ export default ({
                     }
                     document.getElementById("divPlayer").style.visibility = "visible"
                     document.getElementById("player").style.visibility = "visible"
-                    document.getElementById("blur").style.display = "block"
-                    document.getElementById("blur").style.height = document.getElementById("searchResult").clientHeight + "px"
                 }
 
                 let img = document.createElement("img")
@@ -113,7 +115,6 @@ export default ({
         },
         agrandir(){
             if (this.video_playing) {
-                document.getElementById("blur").style.display = "block"
                 document.getElementsByTagName("body")[0].style.overflow = "hidden"
                 if (this.device == "Desktop") {
                     document.getElementById("divPlayer").classList.remove("divPlayerMiniature")
@@ -125,20 +126,17 @@ export default ({
             }
         },
         reduire(){
-            if (this.video_playing) {
-                document.getElementById("blur").style.display = "none"
-                document.getElementsByTagName("body")[0].style.overflow = "visible"
-                if (this.device == "Desktop") {
-                    document.getElementById("divPlayer").classList.add("divPlayerMiniature")
-                }
-                else {
-                    document.getElementById("divPlayer").classList.add("playerMiniatureMobile")
-                }
-                document.getElementById("player").classList.add("playerMiniature")
+            console.log("reduire")
+            document.getElementsByTagName("body")[0].style.overflow = "visible"
+            if (this.device == "Desktop") {
+                document.getElementById("divPlayer").classList.add("divPlayerMiniature")
             }
+            else {
+                document.getElementById("divPlayer").classList.add("playerMiniatureMobile")
+            }
+            document.getElementById("player").classList.add("playerMiniature")
         },
         close(){
-            document.getElementById("blur").style.display = "block"
             document.getElementById("divPlayer").style.visibility = "hidden"
             document.getElementById("player").style.visibility = "hidden"
             this.$refs.youtubePlayer.player.pauseVideo()
@@ -174,7 +172,7 @@ export default ({
             try {
                 document.getElementById("home").style.display = "none"
                 document.getElementById("searchResult").style.display = "flex"
-                let musicVideos = await searchYT(this.$refs.searchInput.value)
+                let musicVideos = await searchMusic(this.$refs.searchInput.value)
                 .then(response =>{
                     // Afficher les résultats
                     console.log('Résultats de la recherche :', response.data);
@@ -189,27 +187,27 @@ export default ({
                             div.id = item.id
                             div.className = "searchOneResult"
 
-                            div.onclick = () => {
+                            div.onclick = async() => {
                                 console.log("clic")
-                                this.video_playing = true
-                                this.$refs.youtubePlayer.playNewVideo(item.id, item["titre"]);
+                                
+                                let music = await getMusic(item["artist"], item["title"])
+                                
+                                console.log(music)
+                                this.$refs.youtubePlayer.playNewVideo(music.data["id_yt"], music.data["Title"] + " " + music.data["Artist"]);
+                                
                                 document.getElementsByTagName("body")[0].style.overflow = "hidden"
                                 document.getElementById("divPlayer").style.display = "block"
-                                document.getElementById("divPlayer").classList.remove("divPlayerMiniature")
-                                document.getElementById("player").classList.remove("playerMiniature")
-                                document.getElementById("divPlayer").classList.remove("playerMiniatureMobile")
-                                document.getElementById("blur").style.display = "block"
-                                document.getElementById("blur").style.height = document.getElementById("searchResult").clientHeight + "px"
+                                document.getElementById("player").style.display = "block"
                                 if (this.device == "Mobile") {
-                                    document.getElementById("searchResult").style.overflow = "hidden"
+                                    document.getElementById("divPlayer").classList.add("playerMiniatureMobile")
+                                    document.getElementById("player").classList.add("playerMiniature")
                                 }
-                                insertMusic({
-                                    "id_yt": item.id, 
-                                    "searchStr": item["titre"],
-                                    "img": item["img"], 
-                                    "Clicked": true
-                                })
-                                /* listenMusic({"id_yt": item.id, "artist": artistAndTitle.data[0], "title": artistAndTitle.data[1], "click": true}) */
+                                else{
+                                    document.getElementById("divPlayer").classList.remove("playerMiniature")
+                                    document.getElementById("divPlayer").classList.remove("playerMiniatureMobile")
+                                }
+                                document.getElementById("divPlayer").style.visibility = "visible"
+                                document.getElementById("player").style.visibility = "visible"
                             }
 
                             let img = document.createElement("img")
@@ -313,6 +311,8 @@ html{
     top: 0;
     left: 0;
     position: absolute;
+    background-color: rgb(50, 50, 50, 0.5);
+    z-index: 3;
 }
 
 .playerFullScreen{

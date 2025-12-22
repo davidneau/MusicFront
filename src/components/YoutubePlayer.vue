@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { insertMusic, getSimilarTrack } from '@/api';
+import { getSimilarTrack } from '@/api';
 
 export default {
   name: "YoutubePlayer",
@@ -86,22 +86,7 @@ export default {
             if (videoId == ""){
               getSimilarTrack(this.videoName)
               .then(async (response) => {
-                console.log("response", response)
-                let musicVideos = await this.$parent.APIytSearch(response.data)
-                console.log('Résultats de la recherche :', musicVideos);
-                this.videoName = musicVideos[0]["snippet"]['localized']['title']
-                this.player.loadVideoById(musicVideos[0].id);
-                
-                let title = response.data.split("-")[0]
-                let artist = response.data.split("-")[1]
-                let id_yt = musicVideos[0].id
-                let payload = {"title": title,
-                               "artist": artist,
-                               "id_yt": id_yt,
-                               "Clicked": false
-                }
-
-                insertMusic(payload)
+                    this.player.loadVideoById(response.data);
                 })
             }
             else {
