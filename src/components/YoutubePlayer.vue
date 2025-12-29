@@ -86,7 +86,8 @@ export default {
             if (videoId == ""){
               getSimilarTrack(this.videoName)
               .then(async (response) => {
-                    this.player.loadVideoById(response.data);
+                    this.videoName = response.data["Title"] + " " + response.data["Artist"]
+                    this.player.loadVideoById(response.data["yt_id"]);
                 })
             }
             else {

@@ -7,7 +7,9 @@
         </div>
         <button @click="logout">Déconnexion</button>
     </div>
-    <div id="searchResult"></div>
+    <div id="searchResult">
+        <div class="loaderLogo"></div>
+    </div>
     <div id="home">
         <div id="replay">
             
@@ -39,7 +41,9 @@ export default ({
             API_KEY: 'AIzaSyA8apjRRfjCHmu6M_4q_r3kUbnO_qJ7xfk',
             API_URL: 'https://www.googleapis.com/youtube/v3/search',
             VIDEO_DETAILS_URL: 'https://www.googleapis.com/youtube/v3/videos',
-            serpAPI_KEY: '777faa1853ab2cc4bfb9c2b265b2147cc6167016356d283bbfc7cb61903009a8'
+            serpAPI_KEY: '777faa1853ab2cc4bfb9c2b265b2147cc6167016356d283bbfc7cb61903009a8',
+            loading: false,
+            clicked: false
         };
     },
     methods: {
@@ -67,24 +71,28 @@ export default ({
                 div.className = "searchOneResult"
 
                 div.onclick = async () => {
-                    this.video_playing = true
+                    if (!this.clicked){
+                        this.clicked = true
+                        this.video_playing = true
 
-                    let music = await getMusic(item["Artist"], item["Title"])
-                    
-                    this.$refs.youtubePlayer.playNewVideo(music.data["id_yt"]);
-                    document.getElementsByTagName("body")[0].style.overflow = "hidden"
-                    document.getElementById("divPlayer").style.display = "block"
-                    document.getElementById("player").style.display = "block"
-                    if (this.device == "Mobile") {
-                        document.getElementById("divPlayer").classList.add("playerMiniatureMobile")
-                        document.getElementById("player").classList.add("playerMiniature")
+                        let music = await getMusic(item["Artist"], item["Title"])
+                        
+                        this.$refs.youtubePlayer.playNewVideo(music.data["id_yt"]);
+                        document.getElementsByTagName("body")[0].style.overflow = "hidden"
+                        document.getElementById("divPlayer").style.display = "block"
+                        document.getElementById("player").style.display = "block"
+                        if (this.device == "Mobile") {
+                            document.getElementById("divPlayer").classList.add("playerMiniatureMobile")
+                            document.getElementById("player").classList.add("playerMiniature")
+                        }
+                        else{
+                            document.getElementById("divPlayer").classList.remove("playerMiniature")
+                            document.getElementById("divPlayer").classList.remove("playerMiniatureMobile")
+                        }
+                        document.getElementById("divPlayer").style.visibility = "visible"
+                        document.getElementById("player").style.visibility = "visible"
+                        this.clicked = false
                     }
-                    else{
-                        document.getElementById("divPlayer").classList.remove("playerMiniature")
-                        document.getElementById("divPlayer").classList.remove("playerMiniatureMobile")
-                    }
-                    document.getElementById("divPlayer").style.visibility = "visible"
-                    document.getElementById("player").style.visibility = "visible"
                 }
 
                 let img = document.createElement("img")
@@ -170,6 +178,7 @@ export default ({
         },
         async search(fillDivSearch) {
             try {
+                this.loading = true
                 document.getElementById("home").style.display = "none"
                 document.getElementById("searchResult").style.display = "flex"
                 let musicVideos = await searchMusic(this.$refs.searchInput.value)
@@ -241,6 +250,7 @@ export default ({
 
                             document.getElementById("searchResult").appendChild(div)
                         });
+                        this.loading = false
                     }
                 })
                 return musicVideos
@@ -270,6 +280,20 @@ html{
     border: 1px solid black;
 }
 
+.loaderLogo {
+  width: 48px;
+  height: 48px;
+  border: 5px solid rgba(0, 0, 0, 0.1);
+  border-top-color: #6366f1; /* indigo / supabase vibe */
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 
 #searchResult {
     display: none;
