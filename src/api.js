@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const API = axios.create({
-  //baseURL: 'http://127.0.0.1:5000',
-  baseURL: 'https://musicda.cloud',
+  baseURL: 'http://127.0.0.1:5000',
+  //baseURL: 'https://musicda.cloud',
 });
 
 export function login(identifiant, password) {

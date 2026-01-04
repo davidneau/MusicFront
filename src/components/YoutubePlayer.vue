@@ -2,7 +2,7 @@
   <div>
     <div id="buttonDiv">
         <button @click="$emit('reduireEvent')" v-if="this.device=='Desktop'" id="reduire">-</button>
-        <button @click="$emit('agrandireEvent')" v-if="this.device=='Desktop'" id="agrandir">⛶</button>
+        <button @click="$emit('agrandirEvent')" v-if="this.device=='Desktop'" id="agrandir">⛶</button>
         <button @click="$emit('closeEvent')" id="close">X</button>
     </div>
     <div id="youtube-player"></div>

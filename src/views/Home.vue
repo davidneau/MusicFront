@@ -7,8 +7,8 @@
         </div>
         <button @click="logout">Déconnexion</button>
     </div>
+    <div id="loaderLogo"></div>
     <div id="searchResult">
-        <div class="loaderLogo"></div>
     </div>
     <div id="home">
         <div id="replay">
@@ -19,7 +19,7 @@
         </div>
     </div>
     <div id="divPlayer">
-        <YoutubePlayer ref="youtubePlayer" id="player" :device="device" @closeEvent="close" @reduireEvent="reduire" @agrandireEvent="agrandir" @searchEvent="search"/>
+        <YoutubePlayer ref="youtubePlayer" id="player" :device="device" @closeEvent="close" @reduireEvent="reduire" @agrandirEvent="agrandir" @searchEvent="search"/>
     </div>
 </template>
 
@@ -51,13 +51,7 @@ export default ({
             let largeurEcran = window.innerWidth || document.documentElement.clientWidth;
             if (largeurEcran > 428) this.device = "Desktop"
             else this.device == "Mobile"
-
             console.log("device :", this.device)
-
-            document.getElementById("divPlayer").onclick = () => {
-                this.reduire()
-            }
-
             let histo = await loadHistorique()
             let replay = await loadReplay()
 
@@ -122,6 +116,7 @@ export default ({
             });
         },
         agrandir(){
+            console.log("agrandir")
             if (this.video_playing) {
                 document.getElementsByTagName("body")[0].style.overflow = "hidden"
                 if (this.device == "Desktop") {
@@ -179,16 +174,18 @@ export default ({
         async search(fillDivSearch) {
             try {
                 this.loading = true
+                document.getElementById("loaderLogo").style.display = "block"
                 document.getElementById("home").style.display = "none"
                 document.getElementById("searchResult").style.display = "flex"
+                document.getElementById("searchResult").innerHTML = ""
                 let musicVideos = await searchMusic(this.$refs.searchInput.value)
                 .then(response =>{
                     // Afficher les résultats
                     console.log('Résultats de la recherche :', response.data);
 
+                    document.getElementById("loaderLogo").style.display = "none"
                     //this.$refs.youtubePlayer.setPlayList(response.data);
                     
-                    document.getElementById("searchResult").innerHTML = ""
 
                     if (fillDivSearch){
                         response.data.forEach(item => {
@@ -280,13 +277,18 @@ html{
     border: 1px solid black;
 }
 
-.loaderLogo {
-  width: 48px;
-  height: 48px;
-  border: 5px solid rgba(0, 0, 0, 0.1);
-  border-top-color: #6366f1; /* indigo / supabase vibe */
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+#loaderLogo {
+    display: none;
+    width: 48px;
+    height: 48px;
+    border: 5px solid rgba(0, 0, 0, 0.1);
+    border-top-color: #6366f1; /* indigo / supabase vibe */
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
 }
 
 @keyframes spin {
