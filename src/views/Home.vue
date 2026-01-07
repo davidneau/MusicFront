@@ -20,18 +20,21 @@
     </div>
     <div id="divPlayer">
         <YoutubePlayer ref="youtubePlayer" id="player" :device="device" @closeEvent="close" @reduireEvent="reduire" @agrandirEvent="agrandir" @searchEvent="search"/>
+        <Description ref="description"></Description>
     </div>
 </template>
 
 <script>
 import YoutubePlayer from '../components/YoutubePlayer.vue';
+import Description from '../components/Description.vue';
 import { searchMusic, loadHistorique, getMusic, loadReplay } from '../api';
 
 export default ({
     name: "MusicPage",
     props: ["userConnected"],
     components: {
-        YoutubePlayer
+        YoutubePlayer,
+        Description
     },
     data() {
         return {
@@ -72,6 +75,11 @@ export default ({
                         let music = await getMusic(item["Artist"], item["Title"])
                         
                         this.$refs.youtubePlayer.playNewVideo(music.data["id_yt"]);
+
+                        this.$refs.description.Title = music.data['Title']
+                        this.$refs.description.Artist = music.data['Artist']
+                        this.$refs.description.setLyrics()
+
                         document.getElementsByTagName("body")[0].style.overflow = "hidden"
                         document.getElementById("divPlayer").style.display = "block"
                         document.getElementById("player").style.display = "block"
@@ -117,16 +125,14 @@ export default ({
         },
         agrandir(){
             console.log("agrandir")
-            if (this.video_playing) {
-                document.getElementsByTagName("body")[0].style.overflow = "hidden"
-                if (this.device == "Desktop") {
-                    document.getElementById("divPlayer").classList.remove("divPlayerMiniature")
-                }
-                else {
-                    document.getElementById("divPlayer").classList.remove("playerMiniatureMobile")
-                }
-                document.getElementById("player").classList.remove("playerMiniature")
+            document.getElementsByTagName("body")[0].style.overflow = "hidden"
+            if (this.device == "Desktop") {
+                document.getElementById("divPlayer").classList.remove("divPlayerMiniature")
             }
+            else {
+                document.getElementById("divPlayer").classList.remove("playerMiniatureMobile")
+            }
+            document.getElementById("player").classList.remove("playerMiniature")
         },
         reduire(){
             console.log("reduire")
@@ -334,9 +340,6 @@ html{
     display: none;
     width: 100%;
     height: 100%;
-    top: 0;
-    left: 0;
-    position: absolute;
     background-color: rgb(50, 50, 50, 0.5);
     z-index: 3;
 }
@@ -372,12 +375,12 @@ html{
 }
 
 .playerMiniatureMobile{
-    top: initial !important;
-    left: initial !important;
-    right: 10px !important;
-    bottom: 10px !important;
-    width: 70% !important;
-    height: 200px !important;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100% !important;
+    height: 100% !important;
+    overflow-y: auto;
 }
 
 
@@ -425,10 +428,9 @@ html{
     }
 
     .divPlayerMiniature{
-        top: calc(100% - 300px) !important;
-        left: calc(100% - 500px) !important;
-        width: 400px !important;
-        height: 200px !important;
+        position: absolute;
+        width: 100% !important;
+        height: 100% !important;
     }
 }
 </style>

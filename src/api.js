@@ -1,11 +1,11 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: process.env.VUE_APP_API_URL,
 });
 
 export function login(identifiant, password) {
-    console.log("login")
+    console.log(process.env.VUE_APP_API_URL)
     return API.post('/login', { 'identifiant': identifiant, 'password': password })
         .then(res => {
             localStorage.setItem('token', res.data.access_token);
@@ -16,82 +16,47 @@ export function login(identifiant, password) {
 
 export function getProfile() {
     console.log("getProfile")
-    return API.get('/profile', {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
-    });
+    return API.get('/profile');
 }
-/* 
-export function listenMusic(payload) {
-    return API.post('/listenMusic', payload, {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
-    });
-} */
 
 export function searchYT(searchStr) {
     console.log("searchYT")
-    return API.get('/searchYT/' + searchStr, {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
-    });
+    return API.get('/searchYT/' + searchStr);
+}
+
+export function getLyrics(searchStr) {
+    console.log("getLyrics")
+    return API.get('/getLyrics/' + searchStr);
 }
 
 export function getMusic(Artist, Title) {
-    console.log("searchYT")
-    return API.get('/getMusic/' + Artist + "-" + Title, {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
-    });
+    console.log("getMusic")
+    return API.get('/getMusic/' + encodeURIComponent(Artist) + "(sep)" + encodeURIComponent(Title));
 }
 
 export function searchMusic(searchStr) {
     console.log("searchMusic")
-    return API.get('/searchMusic/' + searchStr, {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
-    });
+    return API.get('/searchMusic/' + searchStr);
 }
 
 export function loadHistorique() {
     console.log("loadHistorique")
-    return API.get('/loadHistorique/', {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
-    });
+    return API.get('/loadHistorique/');
 }
 
 export function loadReplay() {
     console.log("loadReplay")
-    return API.get('/loadReplay/', {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
-    });
+    return API.get('/loadReplay/');
 }
 
 export function insertMusic(payload) {
     console.log("insertMusic")
-    return API.post('/insertMusic/', payload, {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
-    });
+    return API.post('/insertMusic/', payload);
 }
 
 export function getSimilarTrack(track) {
     console.log("getSimilarTrack")
-    return API.get('/getSimilarTrack/' + track, {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
-    });
+    return API.get('/getSimilarTrack/' + track);
 }
 
 
