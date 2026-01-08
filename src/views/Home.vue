@@ -81,13 +81,14 @@ export default ({
                         this.$refs.description.setLyrics()
 
                         document.getElementsByTagName("body")[0].style.overflow = "hidden"
-                        document.getElementById("divPlayer").style.display = "block"
                         document.getElementById("player").style.display = "block"
                         if (this.device == "Mobile") {
+                            document.getElementById("divPlayer").style.display = "block"
                             document.getElementById("divPlayer").classList.add("playerMiniatureMobile")
                             document.getElementById("player").classList.add("playerMiniature")
                         }
                         else{
+                            document.getElementById("divPlayer").style.display = "flex"
                             document.getElementById("divPlayer").classList.remove("playerMiniature")
                             document.getElementById("divPlayer").classList.remove("playerMiniatureMobile")
                         }
@@ -208,13 +209,14 @@ export default ({
                                 this.$refs.youtubePlayer.playNewVideo(music.data["id_yt"], music.data["Title"] + " " + music.data["Artist"]);
                                 
                                 document.getElementsByTagName("body")[0].style.overflow = "hidden"
-                                document.getElementById("divPlayer").style.display = "block"
                                 document.getElementById("player").style.display = "block"
                                 if (this.device == "Mobile") {
+                                    document.getElementById("divPlayer").style.display = "flex"
                                     document.getElementById("divPlayer").classList.add("playerMiniatureMobile")
                                     document.getElementById("player").classList.add("playerMiniature")
                                 }
                                 else{
+                                    document.getElementById("divPlayer").style.display = "flex"
                                     document.getElementById("divPlayer").classList.remove("playerMiniature")
                                     document.getElementById("divPlayer").classList.remove("playerMiniatureMobile")
                                 }
@@ -336,14 +338,6 @@ html{
     flex-direction: row;
 }
 
-#divPlayer{
-    display: none;
-    width: 100%;
-    height: 100%;
-    background-color: rgb(50, 50, 50, 0.5);
-    z-index: 3;
-}
-
 .playerFullScreen{
     width: 100% !important;
     height: 100% !important;
@@ -403,16 +397,44 @@ html{
     align-items: center;
 }
 
+#divPlayer{
+    display: none;
+}
+
 @media screen and (min-width: 428px)  {
     
     #player {
-        top: 100px;
-        bottom: 100px;
-        left: 100px;
-        right: 100px; 
-        width: calc(100% - 200px); 
-        height: calc(100% - 200px);
+        width: 100%; 
+        height: 50%;
+        top: 0;
+        right: 0;
+        left: 0;
     }
+
+    #divPlayer{
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        position: absolute;
+        top: 60px;
+        right: 0;
+        left: 0;
+        height: calc(100% - 60px);
+    }
+
+    #mainDescription{
+        height: 50%;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        position: absolute;
+    }
+
+    #Lyrics{
+        height: 100%;
+        overflow: scroll;
+    }
+
     .searchOneResult {
         display: flex;
         flex-direction: row;

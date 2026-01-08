@@ -19,6 +19,11 @@ export function getProfile() {
     return API.get('/profile');
 }
 
+export function signInUser(id, mdp) {
+    console.log("signIn")
+    return API.post('/signIn', {"identifiant": id, "password": mdp});
+}
+
 export function searchYT(searchStr) {
     console.log("searchYT")
     return API.get('/searchYT/' + searchStr);

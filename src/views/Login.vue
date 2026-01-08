@@ -13,6 +13,8 @@
             <h2>Password</h2>
             <input type="password" id="password" @keypress.enter="enter"/>
             <button @click="enter">Enter</button>
+            <button @click="signIn">S'inscrire</button>
+            <button @click="signUp">Se connecter</button>
         </div>
     </div>
 </template>
@@ -42,6 +44,12 @@ export default ({
                 console.error('Erreur:', err.response);
                 alert("mot de passe ou identifiant erroné")
             });
+        },
+        signIn(){
+            this.$router.push('signIn')
+        },
+        signUp(){
+            this.$router.push('signUp')
         }
     }
 })
