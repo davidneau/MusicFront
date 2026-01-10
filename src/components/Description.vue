@@ -48,8 +48,15 @@ window.onYouTubeIframeAPIReady = function() {
 }
 
 #Lyrics{
-    width: 25%;
+    width: 90%;
     overflow: auto;
+}
+
+@media screen and (min-width: 428px)  {
+
+    #Lyrics{
+        width: 25%;
+    }
 }
 
 </style>
