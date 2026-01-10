@@ -1,5 +1,7 @@
 <template>
   <div id="mainDescription">
+    <h1>{{ Title }}</h1>
+    <h3>{{ Artist }}</h3>
     <div id="Lyrics"></div>
   </div>
 </template>
@@ -17,7 +19,7 @@ export default {
   },
   methods: {
     setLyrics() {
-        getLyrics(this.Artist + "(sep)" + this.Title)
+        getLyrics(this.Artist, this.Title)
         .then(async (response) => {
             console.log("Lyrics", response.data)
             document.getElementById("Lyrics").innerText = response.data
@@ -40,6 +42,14 @@ window.onYouTubeIframeAPIReady = function() {
 
 #mainDescription{
     background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#Lyrics{
+    width: 25%;
+    overflow: auto;
 }
 
 </style>

@@ -208,10 +208,14 @@ export default ({
                                 console.log(music)
                                 this.$refs.youtubePlayer.playNewVideo(music.data["id_yt"], music.data["Title"] + " " + music.data["Artist"]);
                                 
+                                this.$refs.description.Title = music.data['Title']
+                                this.$refs.description.Artist = music.data['Artist']
+                                this.$refs.description.setLyrics()
+                                
                                 document.getElementsByTagName("body")[0].style.overflow = "hidden"
                                 document.getElementById("player").style.display = "block"
                                 if (this.device == "Mobile") {
-                                    document.getElementById("divPlayer").style.display = "flex"
+                                    document.getElementById("divPlayer").style.display = "block"
                                     document.getElementById("divPlayer").classList.add("playerMiniatureMobile")
                                     document.getElementById("player").classList.add("playerMiniature")
                                 }
@@ -430,10 +434,6 @@ html{
         position: absolute;
     }
 
-    #Lyrics{
-        height: 100%;
-        overflow: scroll;
-    }
 
     .searchOneResult {
         display: flex;

@@ -29,14 +29,20 @@ export function searchYT(searchStr) {
     return API.get('/searchYT/' + searchStr);
 }
 
-export function getLyrics(searchStr) {
+export function getLyrics(Artist, Title) {
     console.log("getLyrics")
-    return API.get('/getLyrics/' + searchStr);
+    return API.get('/getLyrics', {params: {
+        title: Title,
+        artist: Artist
+    }})
 }
 
 export function getMusic(Artist, Title) {
     console.log("getMusic")
-    return API.get('/getMusic/' + encodeURIComponent(Artist) + "(sep)" + encodeURIComponent(Title));
+    return API.get('/getMusic', {params: {
+        title: Title,
+        artist: Artist
+    }})
 }
 
 export function searchMusic(searchStr) {
