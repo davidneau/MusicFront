@@ -6,7 +6,7 @@
                 <button @click="search(true)">Search</button>
             </div>
         </div>
-        <div id="divLogin">
+        <div id="divLoginSingup">
             <h1>Login</h1>
             <h2>Id</h2>
             <input type="text" id="identifiant"/>
@@ -53,7 +53,7 @@ h1, h2 {
     margin: 0;
 }
 
-#divLogin{
+#divLoginSingup{
     margin-left: 25%;
     width: 50%;
     margin-top: 200px;
@@ -66,7 +66,7 @@ h1, h2 {
     border-radius: 15px;
 }
 
-input{
+#divLoginSingup input{
     width: 90% !important;
 }
 @media screen and (min-width: 428px)  {

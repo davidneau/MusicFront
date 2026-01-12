@@ -7,6 +7,7 @@
         </div>
         <button @click="logout">Déconnexion</button>
     </div>
+    <Menu></Menu>
     <div id="loaderLogo"></div>
     <div id="searchResult">
     </div>
@@ -18,23 +19,17 @@
             
         </div>
     </div>
-    <div id="divPlayer">
-        <YoutubePlayer ref="youtubePlayer" id="player" :device="device" @closeEvent="close" @reduireEvent="reduire" @agrandirEvent="agrandir" @searchEvent="search"/>
-        <Description ref="description"></Description>
-    </div>
 </template>
 
 <script>
-import YoutubePlayer from '../components/YoutubePlayer.vue';
-import Description from '../components/Description.vue';
+import Menu from '../components/Menu.vue';
 import { searchMusic, loadHistorique, getMusic, loadReplay } from '../api';
 
 export default ({
     name: "MusicPage",
     props: ["userConnected"],
     components: {
-        YoutubePlayer,
-        Description
+        Menu
     },
     data() {
         return {
@@ -74,11 +69,8 @@ export default ({
 
                         let music = await getMusic(item["Artist"], item["Title"])
                         
-                        this.$refs.youtubePlayer.playNewVideo(music.data["id_yt"]);
-
-                        this.$refs.description.Title = music.data['Title']
-                        this.$refs.description.Artist = music.data['Artist']
-                        this.$refs.description.setLyrics()
+                        this.$emit('descriptionUpdate', {"title": music.data["Title"], "artist": music.data["Artist"]})
+                        this.$emit('playvideo', {"id": music.data["id_yt"], "from": "histo", "title": music.data["Title"], "artist": music.data["Artist"]})
 
                         document.getElementsByTagName("body")[0].style.overflow = "hidden"
                         document.getElementById("player").style.display = "block"
@@ -116,67 +108,15 @@ export default ({
 
                 divDesc.appendChild(title)
                 divDesc.appendChild(artist)
-                divDesc.appendChild(album)
-                
+                divDesc.appendChild(album)      
 
                 div.appendChild(divDesc)
 
                 document.getElementById("historique").appendChild(div)
             });
         },
-        agrandir(){
-            console.log("agrandir")
-            document.getElementsByTagName("body")[0].style.overflow = "hidden"
-            if (this.device == "Desktop") {
-                document.getElementById("divPlayer").classList.remove("divPlayerMiniature")
-            }
-            else {
-                document.getElementById("divPlayer").classList.remove("playerMiniatureMobile")
-            }
-            document.getElementById("player").classList.remove("playerMiniature")
-        },
-        reduire(){
-            console.log("reduire")
-            document.getElementsByTagName("body")[0].style.overflow = "visible"
-            if (this.device == "Desktop") {
-                document.getElementById("divPlayer").classList.add("divPlayerMiniature")
-            }
-            else {
-                document.getElementById("divPlayer").classList.add("playerMiniatureMobile")
-            }
-            document.getElementById("player").classList.add("playerMiniature")
-        },
-        close(){
-            document.getElementById("divPlayer").style.visibility = "hidden"
-            document.getElementById("player").style.visibility = "hidden"
-            this.$refs.youtubePlayer.player.pauseVideo()
-        },
         logout(){
             this.$router.push('/')
-        },
-        async APIytSearch(input) {
-            // Construire l'URL avec les paramètres
-            const url = `${this.API_URL}?part=snippet&type=video&q=${encodeURIComponent(input)}&key=${this.API_KEY}&maxResults=100`;
-            
-            // Effectuer une requête fetch
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            
-            const searchData = await response.json();
-
-            // Récupérer les IDs des vidéos trouvées
-            const videoIds = searchData.items.map(item => item.id.videoId).join(',');
-
-            // Étape 2 : Obtenir les détails des vidéos pour vérifier la catégorie
-            const videoDetailsResponse = await fetch(
-                `${this.VIDEO_DETAILS_URL}?part=snippet&id=${videoIds}&key=${this.API_KEY}`
-            );
-            const videoDetailsData = await videoDetailsResponse.json();
-
-            // Filtrer uniquement les vidéos ayant la catégorie musique (ID: 10)
-            return videoDetailsData.items.filter(video => video.snippet.categoryId === '10');
         },
         async search(fillDivSearch) {
             try {
@@ -206,11 +146,7 @@ export default ({
                                 let music = await getMusic(item["artist"], item["title"])
                                 
                                 console.log(music)
-                                this.$refs.youtubePlayer.playNewVideo(music.data["id_yt"], music.data["Title"] + " " + music.data["Artist"]);
-                                
-                                this.$refs.description.Title = music.data['Title']
-                                this.$refs.description.Artist = music.data['Artist']
-                                this.$refs.description.setLyrics()
+                                this.$emit('playvideo', {"id": music.data["id_yt"], "from": "search", "title": music.data["Title"], "artist": music.data["Artist"]})
                                 
                                 document.getElementsByTagName("body")[0].style.overflow = "hidden"
                                 document.getElementById("player").style.display = "block"

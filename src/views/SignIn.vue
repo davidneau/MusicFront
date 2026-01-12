@@ -6,7 +6,7 @@
                 <button @click="search(true)">Search</button>
             </div>
         </div>
-        <div id="divLogin">
+        <div id="divLoginSingin">
             <h1>Login</h1>
             <h2>Email</h2>
             <input type="text" id="identifiant"/>
@@ -58,7 +58,7 @@ h1, h2 {
     margin: 0;
 }
 
-#divLogin{
+#divLoginSingin{
     margin-left: 25%;
     width: 50%;
     margin-top: 200px;
@@ -76,7 +76,7 @@ h1, h2 {
     visibility: hidden;
 }
 
-input{
+#divLoginSingin input{
     width: 90% !important;
 }
 

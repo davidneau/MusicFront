@@ -5,6 +5,7 @@ import HomeView from '../views/Home.vue'
 import LoginView from '../views/Login.vue'
 import SignUp from '../views/SignUp.vue'
 import SignIn from '../views/SignIn.vue'
+import Playlist from '@/views/Playlist.vue'
 
 const routes = [
     { 
@@ -16,6 +17,12 @@ const routes = [
         path: '/home', 
         component: HomeView, 
         name: 'Home',
+        props: { userConnected: true }
+    },
+    { 
+        path: '/playlist', 
+        component: Playlist, 
+        name: 'Playlist',
         props: { userConnected: true }
     },
     { 

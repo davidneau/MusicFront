@@ -74,7 +74,7 @@ h1, h2 {
     border-radius: 15px;
 }
 
-input{
+#divLogin input{
     width: 90% !important;
 }
 @media screen and (min-width: 428px)  {

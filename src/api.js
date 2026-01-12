@@ -24,6 +24,16 @@ export function signInUser(id, mdp) {
     return API.post('/signIn', {"identifiant": id, "password": mdp});
 }
 
+export function createPlaylist(payload) {
+    console.log("createPlaylist")
+    return API.post('/createPlaylist', payload);
+}
+
+export function getPlaylist(playlistName) {
+    console.log("getPlaylist")
+    return API.post('/getPlaylist/' + playlistName);
+}
+
 export function searchYT(searchStr) {
     console.log("searchYT")
     return API.get('/searchYT/' + searchStr);
