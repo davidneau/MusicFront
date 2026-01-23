@@ -1,13 +1,5 @@
 <template>
-    <div id="bannerSearch">
-        <div>Logo</div>
-        <div v-if="userConnected" id="searchDiv">
-            <input type="text" id="search" @keyup.enter="search" ref="searchInput" value="21 pilots">
-            <button @click="search(true)">Search</button>
-        </div>
-        <button @click="logout">Déconnexion</button>
-    </div>
-    <Menu></Menu>
+    <Menu @search="search"></Menu>
     <div id="loaderLogo"></div>
     <div id="searchResult">
     </div>
@@ -118,14 +110,14 @@ export default ({
         logout(){
             this.$router.push('/')
         },
-        async search(fillDivSearch) {
+        async search(fillDivSearch, searchStr) {
             try {
                 this.loading = true
                 document.getElementById("loaderLogo").style.display = "block"
                 document.getElementById("home").style.display = "none"
                 document.getElementById("searchResult").style.display = "flex"
                 document.getElementById("searchResult").innerHTML = ""
-                let musicVideos = await searchMusic(this.$refs.searchInput.value)
+                let musicVideos = await searchMusic(searchStr)
                 .then(response =>{
                     // Afficher les résultats
                     console.log('Résultats de la recherche :', response.data);
@@ -331,7 +323,7 @@ html{
 
 #historique{
     overflow-y: auto; 
-    max-height: calc(100vh - 60px);
+    max-height: calc(100vh - 81px);
     display: flex;
     flex-direction: column;
     align-items: center;

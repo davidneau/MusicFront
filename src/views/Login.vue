@@ -1,12 +1,7 @@
 <template>
-    <div>
-        <div id="bannerSearch">
-            <div v-if="userConnected">
-                <input type="text" id="search" @keyup.enter="search" ref="searchInput" value="21 pilots">
-                <button @click="search(true)">Search</button>
-            </div>
-        </div>
+    <div id="loginPage">
         <div id="divLogin">
+            <p>pour tester le site : id: Test, mdp: Test </p>
             <h1>Login</h1>
             <h2>Id</h2>
             <input type="text" id="identifiant"/>
@@ -37,6 +32,7 @@ export default ({
                 return getProfile();
             })
             .then(profile => {
+                this.$emit('switchUserConnected')
                 console.log(profile.data); // Affiche les infos de l'utilisateur
                 this.$router.push('home')
             })
@@ -61,10 +57,14 @@ h1, h2 {
     margin: 0;
 }
 
+#loginPage{
+    display: flex;
+    justify-content: center; /* horizontal */
+    align-items: center;     /* vertical */
+    height: calc(100vh - 60px);
+}
+
 #divLogin{
-    margin-left: 25%;
-    width: 50%;
-    margin-top: 200px;
     height: 250px;
     display: flex;
     flex-direction: column;
@@ -75,14 +75,12 @@ h1, h2 {
 }
 
 #divLogin input{
-    width: 90% !important;
+    width: 60% !important;
 }
+
 @media screen and (min-width: 428px)  {
     #divLogin{
-        margin-left: 45%;
-        width: 10%;
-        margin-top: 200px;
-        height: 250px;
+        height: 350px;
         display: flex;
         flex-direction: column;
         justify-content: space-around;

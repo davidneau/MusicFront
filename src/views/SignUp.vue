@@ -70,7 +70,7 @@ h1, h2 {
     width: 90% !important;
 }
 @media screen and (min-width: 428px)  {
-    #divLogin{
+    #divLoginSingup{
         margin-left: 45%;
         width: 10%;
         margin-top: 200px;

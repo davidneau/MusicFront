@@ -1,13 +1,4 @@
 <template>
-    <div id="bannerSearch">
-        <div>Logo</div>
-        <div v-if="userConnected" id="searchDiv">
-            <input type="text" id="search" @keyup.enter="search" ref="searchInput" value="21 pilots">
-            <button @click="search(true)">Search</button>
-        </div>
-        <button @click="logout">Déconnexion</button>
-    </div>
-    <Menu></Menu>
     <div>
         <div>
             <h4 style="color:white">Enter the Playlist ID from youtube :</h4>
@@ -24,7 +15,6 @@
 
 
 <script>
-import Menu from '@/components/Menu.vue';
 import { createPlaylist, getPlaylist } from '@/api';
 
 export default ({
@@ -80,9 +70,6 @@ export default ({
                 });
             })
         },
-    },
-    components: {
-        Menu
     },
     mounted(){
         this.getPlaylist()
