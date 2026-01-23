@@ -1,8 +1,8 @@
 <template>
     <div id="menuBar">
         <div id="searchDiv">
-            <input type="text" id="search" @keyup.enter="search" ref="searchInput" value="" placeholder="search text area">
-            <button @click="$emit('search', true)" @keydown="$emit('search', true, document.getElementById('search'))">Search</button>
+            <input type="text" id="search" @keyup.enter="searching()" ref="searchInput" value="" placeholder="search text area">
+            <button @click="searching()">Search</button>
         </div>
     </div>
 </template>
@@ -11,6 +11,12 @@
 
 export default {
   name: "MenuBar",
+  methods: {
+    searching() {
+        let searchstr = document.getElementById('search').value
+        this.$emit('search', true, searchstr)
+    }
+  }
 };
 </script>
 
