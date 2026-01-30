@@ -76,10 +76,11 @@ export function insertMusic(payload) {
 }
 
 export function getSimilarTrack(track) {
-    console.log("getSimilarTrack")
+    console.log("getSimilarTrack api :", track)
     return API.get('/getSimilarTrack/' + track);
 }
 
+export const ON_ITEM_CLICK = Symbol("onItemClick")
 
 API.interceptors.request.use(config => {
     const token = localStorage.getItem('token');

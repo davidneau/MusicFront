@@ -33,61 +33,68 @@ export default {
     methods: {
         // Charge l'API YouTube
         loadYouTubeAPI() {
-        if (window.YT) {
-            // Si l'API est déjà présente, on appelle directement la méthode de Vue
-            this.onYouTubeIframeAPIReady();
-        } else {
-            // Si l'API n'est pas encore disponible, on charge le script
-            const script = document.createElement('script');
-            script.src = 'https://www.youtube.com/iframe_api';
-            script.onload = () => {
-            // Une fois le script chargé, on appelle la fonction `onYouTubeIframeAPIReady`
-            this.onYouTubeIframeAPIReady();
-            };
-            document.body.appendChild(script);
-        }
+            if (window.YT) {
+                // Si l'API est déjà présente, on appelle directement la méthode de Vue
+                this.onYouTubeIframeAPIReady();
+            } else {
+                // Si l'API n'est pas encore disponible, on charge le script
+                const script = document.createElement('script');
+                script.src = 'https://www.youtube.com/iframe_api';
+                script.onload = () => {
+                // Une fois le script chargé, on appelle la fonction `onYouTubeIframeAPIReady`
+                this.onYouTubeIframeAPIReady();
+                };
+                document.body.appendChild(script);
+            }
         },
         // Fonction appelée par YouTube lorsque l'API est prête
         onYouTubeIframeAPIReady() {
-        if (window.YT && window.YT.Player) {
-            this.isAPIReady = true;
-            this.createPlayer();
-        } else {
-            console.error("L'API YouTube n'est pas encore prête.");
-        }
+            if (window.YT && window.YT.Player) {
+                this.isAPIReady = true;
+                this.createPlayer();
+            } else {
+                console.error("L'API YouTube n'est pas encore prête.");
+            }
         },
         // Crée l'instance du lecteur YouTube
         createPlayer() {
-        if (this.isAPIReady) {
-            this.player = new window.YT.Player('youtube-player', {
-            videoId: 'dQw4w9WgXcQ', // ID de la vidéo initiale
-            events: {
-                'onStateChange': this.onPlayerStateChange
+            if (this.isAPIReady) {
+                this.player = new window.YT.Player('youtube-player', {
+                videoId: 'dQw4w9WgXcQ', // ID de la vidéo initiale
+                events: {
+                    'onStateChange': this.onPlayerStateChange
+                }
+                });
+            } else {
+                console.error("L'API YouTube n'est pas encore prête.");
             }
-            });
-        } else {
-            console.error("L'API YouTube n'est pas encore prête.");
-        }
         },
         // Gère les changements d'état du lecteur
         onPlayerStateChange(event) {
-        if (event.data === window.YT.PlayerState.ENDED) {
-            console.log('La vidéo est terminée');
-            if (this.playList.length == 0) this.playNewVideo("")
-            else this.playNewVideo(this.playListCursor+1, "", "playlist")
-        }
+            if (event.data === window.YT.PlayerState.ENDED) {
+                console.log('La vidéo est terminée');
+            /*     if (this.playList.length == 0) this.playNewVideo("")
+                else this.playNewVideo(this.playListCursor+1, "", "playlist")
+             */    
+                if (this.playList.length == 0) this.$emit("playvideo", {"from" : "automatic"})
+                else this.playNewVideo(this.playListCursor+1, "", "playlist")
+            }
         },
         setPlayList(playList){
             this.playList = playList
             console.log("playList set to :", this.playList)
         },
+        getVideoName(){
+            return this.videoName
+        },
+        setVideoName(videoName){
+            this.videoName = videoName
+        },
         // Change la vidéo avec un nouvel ID
         playNewVideo(videoId, videoName="", from, title = "", artist = "") {
             if (this.player) {
-                console.log("pl avant", this.playList)
-                console.log(from)
+                console.log("id", videoId)
                 if (from !== "playlist") this.playList = []
-                console.log("pl", this.playList)
                 if (this.playList.length == 0) {
                     if (videoId == ""){
                         console.log("aa", this.videoName)                       
@@ -142,15 +149,15 @@ export default {
     }
 
     #buttonDiv{
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    width: 20%;
-    height: 20px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        width: 20%;
+        height: 20px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
     }
 
 

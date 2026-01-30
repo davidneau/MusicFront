@@ -14,7 +14,7 @@ export default {
   methods: {
     searching() {
         let searchstr = document.getElementById('search').value
-        this.$emit('search', true, searchstr)
+        this.$emit('search', searchstr)
     }
   }
 };
@@ -24,11 +24,15 @@ export default {
 
 #menuBar{
     width: 100%;
-    background-color: blue;
+    background-color: #004f60;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
+}
+
+#searchDiv{
+    padding: 5px;
 }
 
 </style>

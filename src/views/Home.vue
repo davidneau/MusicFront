@@ -1,31 +1,51 @@
 <template>
     <Menu @search="search"></Menu>
     <div id="loaderLogo"></div>
-    <div id="searchResult">
-    </div>
     <div id="home">
+        <div id="searchResult">
+            <div id="searchResultDiv" v-for="musicS in listMusicsSearch" :key="musicS">
+                <Music 
+                    :title="musicS['title']" 
+                    :artist="musicS['artist']"
+                    :album="musicS['album']"
+                    :videoId="musicS['id']"
+                    :img="musicS['img']"
+                    from="search"
+                ></Music>
+            </div>
+        </div>
         <div id="replay">
             
         </div>
         <div id="historique">
-            
+            <div v-for="music in listMusicsHisto" :key="music">
+                <Music 
+                    :title="music['Title']" 
+                    :artist="music['Artist']"
+                    :album="music['StatMusic3']['Album']"
+                    :img="music['StatMusic3']['Image']"
+                    :videoId="music['id_yt']"
+                    from="histo"
+                ></Music>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
 import Menu from '../components/Menu.vue';
-import { searchMusic, loadHistorique, getMusic, loadReplay } from '../api';
+import Music from '@/components/Music.vue';
+import { searchMusic, loadHistorique } from '../api';
 
 export default ({
     name: "MusicPage",
-    props: ["userConnected"],
+    props: ["userConnected", "device"],
     components: {
-        Menu
+        Menu,
+        Music
     },
     data() {
         return {
-            device: "Mobile",
             current_video_id: "",
             video_playing: false,
             API_KEY: 'AIzaSyA8apjRRfjCHmu6M_4q_r3kUbnO_qJ7xfk',
@@ -33,167 +53,30 @@ export default ({
             VIDEO_DETAILS_URL: 'https://www.googleapis.com/youtube/v3/videos',
             serpAPI_KEY: '777faa1853ab2cc4bfb9c2b265b2147cc6167016356d283bbfc7cb61903009a8',
             loading: false,
-            clicked: false
+            clicked: false,
+            listMusicsHisto: Array(),
+            listMusicsSearch: Array()
         };
     },
     methods: {
         async init(){
-            let largeurEcran = window.innerWidth || document.documentElement.clientWidth;
-            if (largeurEcran > 428) this.device = "Desktop"
-            else this.device == "Mobile"
             console.log("device :", this.device)
             let histo = await loadHistorique()
-            let replay = await loadReplay()
-
-            histo.data.splice(20)
-            console.log(replay)
-
-            histo.data.forEach(item => {
-                console.log(item)
-                let div = document.createElement("div")
-                div.id = item[2]
-                div.className = "searchOneResult"
-
-                div.onclick = async () => {
-                    if (!this.clicked){
-                        this.clicked = true
-                        this.video_playing = true
-
-                        let music = await getMusic(item["Artist"], item["Title"])
-                        
-                        this.$emit('descriptionUpdate', {"title": music.data["Title"], "artist": music.data["Artist"]})
-                        this.$emit('playvideo', {"id": music.data["id_yt"], "from": "histo", "title": music.data["Title"], "artist": music.data["Artist"]})
-
-                        document.getElementsByTagName("body")[0].style.overflow = "hidden"
-                        document.getElementById("player").style.display = "block"
-                        if (this.device == "Mobile") {
-                            document.getElementById("divPlayer").style.display = "block"
-                            document.getElementById("divPlayer").classList.add("playerMiniatureMobile")
-                            document.getElementById("player").classList.add("playerMiniature")
-                        }
-                        else{
-                            document.getElementById("divPlayer").style.display = "flex"
-                            document.getElementById("divPlayer").classList.remove("playerMiniature")
-                            document.getElementById("divPlayer").classList.remove("playerMiniatureMobile")
-                        }
-                        document.getElementById("divPlayer").style.visibility = "visible"
-                        document.getElementById("player").style.visibility = "visible"
-                        this.clicked = false
-                    }
-                }
-
-                let img = document.createElement("img")
-                img.src = item["StatMusic3"]["Image"]
-                div.appendChild(img)
-
-                let divDesc = document.createElement("div")
-                divDesc.className = "divDesc"
-
-                let title = document.createElement("h2")
-                title.textContent = item["Title"]
-                
-                let artist = document.createElement("h2")
-                artist.textContent = item["Artist"]
-                
-                let album = document.createElement("h2")
-                album.textContent = item["StatMusic3"]["Album"]
-
-                divDesc.appendChild(title)
-                divDesc.appendChild(artist)
-                divDesc.appendChild(album)      
-
-                div.appendChild(divDesc)
-
-                document.getElementById("historique").appendChild(div)
-            });
+            console.log(histo.data)
+            this.listMusicsHisto = histo.data.splice(20)
         },
         logout(){
             this.$router.push('/')
         },
-        async search(fillDivSearch, searchStr) {
-            try {
-                this.loading = true
-                document.getElementById("loaderLogo").style.display = "block"
-                document.getElementById("home").style.display = "none"
-                document.getElementById("searchResult").style.display = "flex"
-                document.getElementById("searchResult").innerHTML = ""
-                let musicVideos = await searchMusic(searchStr)
-                .then(response =>{
-                    // Afficher les résultats
-                    console.log('Résultats de la recherche :', response.data);
-
-                    document.getElementById("loaderLogo").style.display = "none"
-                    //this.$refs.youtubePlayer.setPlayList(response.data);
-                    
-
-                    if (fillDivSearch){
-                        response.data.forEach(item => {
-                            let div = document.createElement("div")
-                            div.id = item.id
-                            div.className = "searchOneResult"
-
-                            div.onclick = async() => {
-                                console.log("clic")
-                                
-                                let music = await getMusic(item["artist"], item["title"])
-                                
-                                console.log(music)
-                                this.$emit('playvideo', {"id": music.data["id_yt"], "from": "search", "title": music.data["Title"], "artist": music.data["Artist"]})
-                                
-                                document.getElementsByTagName("body")[0].style.overflow = "hidden"
-                                document.getElementById("player").style.display = "block"
-                                if (this.device == "Mobile") {
-                                    document.getElementById("divPlayer").style.display = "block"
-                                    document.getElementById("divPlayer").classList.add("playerMiniatureMobile")
-                                    document.getElementById("player").classList.add("playerMiniature")
-                                }
-                                else{
-                                    document.getElementById("divPlayer").style.display = "flex"
-                                    document.getElementById("divPlayer").classList.remove("playerMiniature")
-                                    document.getElementById("divPlayer").classList.remove("playerMiniatureMobile")
-                                }
-                                document.getElementById("divPlayer").style.visibility = "visible"
-                                document.getElementById("player").style.visibility = "visible"
-                            }
-
-                            let img = document.createElement("img")
-                            img.src = item["img"]
-                            div.appendChild(img)
-
-                            let divDesc = document.createElement("div")
-                            divDesc.className = "divDesc"
-
-                            if (Object.keys(item).includes('title')){
-                                let title = document.createElement("h2")
-                                title.textContent = item["title"]
-                                
-                                let artist = document.createElement("h2")
-                                artist.textContent = item["artist"]
-                                
-                                let album = document.createElement("h2")
-                                album.textContent = item["album"]
-
-                                divDesc.appendChild(title)
-                                divDesc.appendChild(artist)
-                                divDesc.appendChild(album)
-                            } else {
-                                let h2 = document.createElement("h2")
-                                h2.textContent = item["titre"]
-
-                                divDesc.appendChild(h2)
-                            }
-
-                            div.appendChild(divDesc)
-
-                            document.getElementById("searchResult").appendChild(div)
-                        });
-                        this.loading = false
-                    }
-                })
-                return musicVideos
-            } catch (error) {
-                console.error('Erreur lors de la recherche YouTube :', error);
-            }
+        async search(searchStr) {
+            document.getElementById("historique").innerHTML = ""
+            document.getElementById("loaderLogo").style.display = "block"
+            document.getElementById("searchResult").style.display = "none"
+            let musicVideos = await searchMusic(searchStr)
+            console.log(musicVideos.data)
+            document.getElementById("loaderLogo").style.display = "none"
+            document.getElementById("searchResult").style.display = "flex"
+            this.listMusicsSearch = musicVideos.data
         }
     },
     async mounted() {
@@ -242,7 +125,7 @@ html{
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
-    height: calc(100vh - 60px);
+    height: calc(100vh - 91px);
     overflow-y: auto;     /* scroll vertical seulement si besoin */
     overflow-x: hidden; 
 }
@@ -310,59 +193,24 @@ html{
 }
 
 
-#player {
-    top: 20px;
-    bottom: 20px;
-    left: 20px;
-    right: 20px; 
-    width: calc(100vw - 40px); 
-    height: calc(100vh - 40px);
-    position: absolute;
-}
-
 
 #historique{
     overflow-y: auto; 
-    max-height: calc(100vh - 81px);
+    max-height: calc(100vh - 91px);
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-#divPlayer{
-    display: none;
+#historique>div{
+    width: 90%;
+}
+
+#searchResult>div{
+    width: 90%;
 }
 
 @media screen and (min-width: 428px)  {
-    
-    #player {
-        width: 100%; 
-        height: 50%;
-        top: 0;
-        right: 0;
-        left: 0;
-    }
-
-    #divPlayer{
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: center;
-        position: absolute;
-        top: 60px;
-        right: 0;
-        left: 0;
-        height: calc(100% - 60px);
-    }
-
-    #mainDescription{
-        height: 50%;
-        bottom: 0;
-        right: 0;
-        left: 0;
-        position: absolute;
-    }
-
-
     .searchOneResult {
         display: flex;
         flex-direction: row;
@@ -375,6 +223,15 @@ html{
         padding: 10px;
         background-color: #00ebff;
         cursor: pointer;
+    }
+
+    
+    #historique>div{
+        width: 30%;
+    }
+
+    #searchResult>div{
+        width: 30%;
     }
 
     .divPlayerMiniature{

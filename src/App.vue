@@ -7,20 +7,25 @@
             @descriptionUpdate="descriptionUpdate" 
             @changeplaylist="changeplaylist"
             @switchUserConnected="switchUserConnected"
+            :device="device"
         />
+        <div id="divPlayer">
+            <div id="playerAndDesc">
+                <YoutubePlayer
+                    ref="youtubePlayer" 
+                    id="player" 
+                    :device="device" 
+                    @playvideo="playvideo" 
+                    @closeEvent="close" 
+                    @reduireEvent="reduire" 
+                    @agrandirEvent="agrandir"
+                    @descriptionUpdate="descriptionUpdate"
+                />
+                <Description :device="device" ref="description" @playvideo="playvideo" ></Description>
+            </div>
+            <SuggestionsPanel v-if="device === 'Desktop'" ref="sugg" @playvideo="playvideo"></SuggestionsPanel>
+        </div>
     </v-main>
-    <div id="divPlayer">
-        <YoutubePlayer
-            ref="youtubePlayer" 
-            id="player" 
-            :device="device" 
-            @closeEvent="close" 
-            @reduireEvent="reduire" 
-            @agrandirEvent="agrandir"
-            @descriptionUpdate="descriptionUpdate"
-        />
-        <Description ref="description"></Description>
-    </div>
   </v-app>
 </template>
 
@@ -28,16 +33,32 @@
 import YoutubePlayer from './components/YoutubePlayer.vue';
 import Description from './components/Description.vue';
 import Banner from './components/Banner.vue';
-import { searchMusic, getMusic } from './api';
+import SuggestionsPanel from './components/SuggestionsPanel.vue'
+import { searchMusic, getMusic, ON_ITEM_CLICK, getSimilarTrack } from './api';
+import { provide, getCurrentInstance  } from 'vue'
 
 export default {
+    setup() {
+        // 👇 récupérer l'instance du composant
+        const instance = getCurrentInstance()
+        // instance.proxy = le 'this' du composant
+        const onItemClick = (payload) => {
+            instance.proxy.playvideo(payload)
+        }
+
+        provide(ON_ITEM_CLICK, onItemClick)
+
+        return {}
+    },
     name: 'App',
     components: {
         YoutubePlayer,
         Description,
-        Banner
+        Banner,
+        SuggestionsPanel
     },
     data: () => ({
+        device: ""
         //
     }),
     methods: {
@@ -50,9 +71,39 @@ export default {
             this.$refs.description.Artist = payload.artist
             this.$refs.description.setLyrics()
         },
-        playvideo(payload){
-            console.log("payload", payload)
-            this.$refs.youtubePlayer.playNewVideo(payload.id, payload.title + " " + payload.artist, payload.from, payload.title, payload.artist);
+        async playvideo(payload){
+            document.getElementById("divPlayer").style.display = "flex"
+            console.log("playvideo", payload)
+            console.log(payload.id == "none")
+            if (payload.id == "none"){
+                let music = await getMusic(payload.artist, payload.title)
+                console.log("music", music)
+                payload.id = music.data.id_yt
+            }
+            if (payload.from == "search" || payload.from == "histo" || payload.from == "automatic"){
+                let videoName = this.$refs.youtubePlayer.getVideoName()
+                console.log("video", videoName)
+                if (payload.from == "search" || payload.from == "histo") {
+                    videoName = payload.title + " " + payload.artist
+                    this.$refs.youtubePlayer.playNewVideo(payload.id, videoName, payload.from, payload.title, payload.artist)
+                    this.$refs.youtubePlayer.setVideoName(payload.title + " " + payload.artist)
+                }
+                getSimilarTrack(videoName)
+                .then(async (response) => {
+                    console.log("getSimilarTrack : ", response.data)
+                    if (payload.from == "automatic") {
+                        console.log("resp", response.data)
+                        let title = response.data["Title"]
+                        let artist = response.data["Artist"]
+                        this.$refs.youtubePlayer.player.loadVideoById(response.data["yt_id"]);
+                        this.descriptionUpdate({"title": title, "artist": artist})
+                        this.$refs.youtubePlayer.setVideoName(response.data["Title"] + " " + response.data["Artist"])
+                    }
+                    if(this.device == "Desktop") this.$refs.sugg.fillDiv(response.data['Result'])
+                    else this.$refs.description.fillDivSugg(response.data['Result'])
+                })
+                console.log("getVideoName:", this.$refs.youtubePlayer.getVideoName())
+            }
         },
         changeplaylist(payload){
             this.$refs.youtubePlayer.setPlayList(payload.playlist);
@@ -172,7 +223,13 @@ export default {
             } catch (error) {
                 console.error('Erreur lors de la recherche YouTube :', error);
             }
-        }
+        },
+    },
+    mounted(){        
+        let largeurEcran = window.innerWidth || document.documentElement.clientWidth;
+        if (largeurEcran > 428) this.device = "Desktop"
+        else this.device == "Mobile"
+        console.log("device : ", this.device)
     }
 }
 </script>
@@ -192,17 +249,43 @@ body {
     margin: 0;
 }
 
+#playerAndDesc{
+    flex: 0 0 100%;
+    height: calc(100vh - 91px);
+}
 
 #bannerSearch {
+    overflow: auto;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    background-color: #00a6ef;
+    background-color: black;
     height: 60px;
     position: sticky;
     left: 0;
     right: 0;
     top: 0;
+}
+
+#divPlayer{
+    display: none;
+    flex-direction: row;
+    position: absolute;
+    top: 91px;
+    width: 100%;
+    height: calc(100% - 91px);
+}
+
+#player{
+    height: 50%;
+    max-height: 50%;
+}
+
+
+@media screen and (min-width: 428px)  {
+    #playerAndDesc{
+        flex: 0 0 70%;
+    }
 }
 </style>
