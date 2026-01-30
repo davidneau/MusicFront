@@ -1,6 +1,5 @@
 <template>
   <v-app>
-    <p style="color:white">Impact-Site-Verification: 1137eed2-3cc0-461b-9315-6cc71c0133be</p>
     <Banner ref="banner" @logout="logout" @switchUserConnected="switchUserConnected" :userConnected="userConnected"></Banner>
     <v-main>
         <router-view  
