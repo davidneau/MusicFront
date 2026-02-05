@@ -19,7 +19,7 @@
             <h3>{{ Artist }}</h3>
             <div id="Lyrics"></div>
         </div>
-        <div v-show="activeTab === 'Suggestions'">
+        <div v-show="activeTab === 'Suggestions'" style="height: 100%;">
             <SuggestionsPanel ref="suggDesc"></SuggestionsPanel>
         </div>
     </div>

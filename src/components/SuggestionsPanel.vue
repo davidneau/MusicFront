@@ -1,7 +1,7 @@
 <template>
-    <div id="mainSuggestion">
+    <div id="mainSuggestion" style="height: 100%;">
         <div v-for="music in listMusics" :key="music">
-            <Music :title="music.name" :artist="music.artist.name" videoId="none" from="search"></Music>
+            <Music :title="music.name" :artist="music.artist.name" :img="music.Image" videoId="none" from="search"></Music>
         </div>
     </div>
 </template>

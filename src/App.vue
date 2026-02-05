@@ -80,6 +80,10 @@ export default {
                 console.log("music", music)
                 payload.id = music.data.id_yt
             }
+            if (payload.from == "search" || payload.from == "histo"){
+                document.getElementById("divPlayer").style.visibility = "visible"
+                document.getElementById("player").style.visibility = "visible"
+            }
             if (payload.from == "search" || payload.from == "histo" || payload.from == "automatic"){
                 let videoName = this.$refs.youtubePlayer.getVideoName()
                 console.log("video", videoName)
@@ -91,16 +95,18 @@ export default {
                 getSimilarTrack(videoName)
                 .then(async (response) => {
                     console.log("getSimilarTrack : ", response.data)
-                    if (payload.from == "automatic") {
-                        console.log("resp", response.data)
-                        let title = response.data["Title"]
-                        let artist = response.data["Artist"]
-                        this.$refs.youtubePlayer.player.loadVideoById(response.data["yt_id"]);
-                        this.descriptionUpdate({"title": title, "artist": artist})
-                        this.$refs.youtubePlayer.setVideoName(response.data["Title"] + " " + response.data["Artist"])
+                    if (!Object.keys(response.data).includes("Ex")){
+                        if (payload.from == "automatic") {
+                            console.log("resp", response.data)
+                            let title = response.data["Title"]
+                            let artist = response.data["Artist"]
+                            this.$refs.youtubePlayer.player.loadVideoById(response.data["yt_id"]);
+                            this.descriptionUpdate({"title": title, "artist": artist})
+                            this.$refs.youtubePlayer.setVideoName(response.data["Title"] + " " + response.data["Artist"])
+                        }
+                        if(this.device == "Desktop") this.$refs.sugg.fillDiv(response.data['Result'])
+                        else this.$refs.description.fillDivSugg(response.data['Result'])
                     }
-                    if(this.device == "Desktop") this.$refs.sugg.fillDiv(response.data['Result'])
-                    else this.$refs.description.fillDivSugg(response.data['Result'])
                 })
                 console.log("getVideoName:", this.$refs.youtubePlayer.getVideoName())
             }

@@ -1,19 +1,19 @@
 <template>
     <div id="bannerSearch">
         <div>Logo</div>
-        <router-link v-if="userConnected" to="/Home">
+        <router-link v-if="userConnected === 'true'" to="/Home">
             <button class="btn-menu">Home</button>
         </router-link>
-        <router-link v-if="userConnected" to="/playlist">
+        <router-link v-if="userConnected === 'true'" to="/playlist">
             <button class="btn-menu">Playlist</button>
         </router-link>
-        <router-link v-if="userConnected" to="/statistiques">
+        <router-link v-if="userConnected === 'true'" to="/statistiques">
             <button class="btn-menu">Statistiques</button>
         </router-link>
-        <router-link v-if="userConnected" to="/jeux">
+        <router-link v-if="userConnected === 'true'" to="/jeux">
             <button class="btn-menu">Jeux</button>
         </router-link>
-        <router-link v-if="userConnected" to="/parametre">
+        <router-link v-if="userConnected === 'true'" to="/parametre">
             <button class="btn-menu">Paramètre</button>
         </router-link>
         <button @click="logoutBanner">Déconnexion</button>
@@ -27,20 +27,35 @@ export default ({
     name: "MusicPage",
     data() {
         return {
-            userConnected : true
+            userConnected : localStorage.getItem('userConnected')
         }
     },
     methods: {
         connectedUserBanner() {
             this.userConnected = true
+            console.log("switch", this.userConnected)
         },
         disconnectedUserBanner() {
             this.userConnected = false
+            console.log("switch", this.userConnected)
         },
         logoutBanner(){
             this.disconnectedUserBanner()
             this.$emit('logout')
         }
+    },
+    watch: {
+        userConnected(newVal) {
+            console.log("watch", newVal)
+            localStorage.setItem('userConnected', newVal.toString())
+            this.userConnected = newVal.toString()
+        }
+    },
+    mounted(){
+        console.log(localStorage.getItem('userConnected'))
+        console.log(typeof localStorage.getItem('userConnected'))
+        console.log(this.userConnected)
+        console.log(typeof this.userConnected)
     }
 });
 </script>

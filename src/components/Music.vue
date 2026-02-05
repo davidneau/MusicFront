@@ -1,6 +1,6 @@
 <template>
     <div @click="handleClick" class="musicDiv btn-blue-glass">
-        <img :src=img>
+        <img :src=img height="60px" width="60px">
         <div>
             <h2>{{ title }}</h2>
             <h3>{{ artist }}</h3>
@@ -48,7 +48,7 @@ export default ({
     }
     
     .musicDiv img{
-        flex: 0 0 20%;
+        margin-right: 10px;
     }
 
     .musicDiv h2,h3{
