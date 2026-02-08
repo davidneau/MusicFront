@@ -1,6 +1,7 @@
 <template>
-    <div @click="handleClick" class="musicDiv btn-blue-glass">
-        <img :src=img height="60px" width="60px">
+    <div @click="handleClick" class="musicDiv btn-menu">
+        <img v-if="img == 'https://upload.wikimedia.org/wikipedia/commons/9/97/Music_-_The_Noun_Project.svg'" style='filter: invert(1);' :src=img height="60px" width="60px">
+        <img v-else :src=img height="60px" width="60px">
         <div>
             <h2>{{ title }}</h2>
             <h3>{{ artist }}</h3>
@@ -33,8 +34,6 @@ export default ({
     name: "divMusic",
     props: ["title", "artist", "album", "img", "videoId", "from"],
     methods: {
-    },
-    async mounted() {
     }
 });
 </script>

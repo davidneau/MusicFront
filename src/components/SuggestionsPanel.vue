@@ -1,6 +1,6 @@
 <template>
     <div id="mainSuggestion" style="height: 100%;">
-        <div v-for="music in listMusics" :key="music">
+        <div v-for="music in listMusics" class="musicSugg" :key="music">
             <Music :title="music.name" :artist="music.artist.name" :img="music.Image" videoId="none" from="search"></Music>
         </div>
     </div>
@@ -32,9 +32,13 @@ export default ({
 
 <style>
     #mainSuggestion{
-        flex: 0 0 30%;
-        height: calc(100vh - 91px);
-        background-color: #2196f3;
+        flex: 0 0 25%;
+        height: calc(100vh - 60);
+        background-color: black;
         overflow: auto;
+    }
+
+    .musicSugg{
+        margin: 20px;
     }
 </style>

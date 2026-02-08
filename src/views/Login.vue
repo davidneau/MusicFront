@@ -1,15 +1,17 @@
 <template>
-    <div id="loginPage">
-        <div id="divLogin">
-            <p>pour tester le site : id: Test, mdp: Test </p>
-            <h1>Login</h1>
-            <h2>Id</h2>
-            <input type="text" id="identifiant"/>
-            <h2>Password</h2>
-            <input type="password" id="password" @keypress.enter="enter"/>
-            <button @click="enter">Enter</button>
-            <button @click="signIn">S'inscrire</button>
-            <button @click="signUp">Se connecter</button>
+    <div>
+        <div id="loginPage">
+            <div id="divLogin">
+                <p>pour tester le site : id: Test, mdp: Test </p>
+                <h1>Login</h1>
+                <h2>Id</h2>
+                <input type="text" id="identifiant"/>
+                <h2>Password</h2>
+                <input type="password" id="password" @keypress.enter="enter"/>
+                <button @click="enter">Enter</button>
+                <button @click="signIn">S'inscrire</button>
+                <button @click="signUp">Se connecter</button>
+            </div>
         </div>
     </div>
 </template>
@@ -87,6 +89,7 @@ h1, h2 {
         align-items: center;
         background-color: #00ebff;
         border-radius: 15px;
+        width: 15%;
     }
 }
 </style>

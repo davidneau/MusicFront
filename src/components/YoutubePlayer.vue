@@ -1,10 +1,6 @@
 <template>
   <div>
-    <div id="buttonDiv">
-        <button @click="$emit('reduireEvent')" id="reduire">-</button>
-        <button @click="$emit('agrandirEvent')" id="agrandir">⛶</button>
-        <button @click="$emit('closeEvent')" id="close">X</button>
-    </div>
+    <button id="btn-agrandir" style="visibility: hidden;" @click="$emit('agrandir')">⛶</button>
     <div id="youtube-player"></div>
   </div>
 </template>
@@ -144,6 +140,7 @@ export default {
 <style>
 
     #youtube-player{
+        display: block;
         width: 100%;
         height: 100%;
     }
@@ -167,7 +164,11 @@ export default {
         padding: 0;
     }
 
-
+    #btn-agrandir{
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
 
     @media screen and (min-width: 428px)  {
         

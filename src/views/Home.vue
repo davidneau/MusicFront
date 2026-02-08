@@ -1,5 +1,4 @@
 <template>
-    <Menu @search="search"></Menu>
     <div id="loaderLogo"></div>
     <div id="home">
         <div id="searchResult">
@@ -33,15 +32,13 @@
 </template>
 
 <script>
-import Menu from '../components/Menu.vue';
 import Music from '@/components/Music.vue';
-import { searchMusic, loadHistorique } from '../api';
+import { loadHistorique } from '../api';
 
 export default ({
     name: "MusicPage",
     props: ["userConnected", "device"],
     components: {
-        Menu,
         Music
     },
     data() {
@@ -68,15 +65,8 @@ export default ({
         logout(){
             this.$router.push('/')
         },
-        async search(searchStr) {
-            document.getElementById("historique").innerHTML = ""
-            document.getElementById("loaderLogo").style.display = "block"
-            document.getElementById("searchResult").style.display = "none"
-            let musicVideos = await searchMusic(searchStr)
-            console.log(musicVideos.data)
-            document.getElementById("loaderLogo").style.display = "none"
-            document.getElementById("searchResult").style.display = "flex"
-            this.listMusicsSearch = musicVideos.data
+        async setSearchResult(list) {
+            this.listMusicsSearch = list
         }
     },
     async mounted() {
@@ -94,10 +84,6 @@ html, body, #app, v-app, v-main{
 
 html{
     background-color: aliceblue;
-}
-
-#search {
-    border: 1px solid black;
 }
 
 #loaderLogo {
@@ -125,7 +111,7 @@ html{
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
-    height: calc(100vh - 91px);
+    height: calc(100vh - 60px);
     overflow-y: auto;     /* scroll vertical seulement si besoin */
     overflow-x: hidden; 
 }
@@ -156,7 +142,7 @@ html{
 .playerFullScreen{
     width: 100% !important;
     height: 100% !important;
-    top: 0 !important;
+    top: 0;
     left: 0 !important;
     bottom: 0 !important;
     right: 0 !important;
@@ -174,13 +160,13 @@ html{
 }
 
 .playerMiniature{
-    top: 0 !important;
-    left: 0 !important;
+    top: 80vh !important;
+    left: 50vw !important;
     right: 0 !important;
     bottom: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    position: relative !important;
+    width: 50vw !important;
+    height: 20vh !important;
+    position: absolute;
 }
 
 .playerMiniatureMobile{
@@ -196,7 +182,7 @@ html{
 
 #historique{
     overflow-y: auto; 
-    max-height: calc(100vh - 91px);
+    max-height: calc(100vh - 60px);
     display: flex;
     flex-direction: column;
     align-items: center;

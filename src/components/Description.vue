@@ -5,7 +5,7 @@
       <button
         v-for="tab in tabs"
         :key="tab"
-        :class="{ active: activeTab === tab }"
+        :class="['tab-btn', 'active' && activeTab === tab ]"
         @click="activeTab = tab"
       >
         {{ tab }}
@@ -19,28 +19,22 @@
             <h3>{{ Artist }}</h3>
             <div id="Lyrics"></div>
         </div>
-        <div v-show="activeTab === 'Suggestions'" style="height: 100%;">
-            <SuggestionsPanel ref="suggDesc"></SuggestionsPanel>
-        </div>
     </div>
   </div>
 </template>
 
 <script>
 import { getLyrics } from '@/api';
-import SuggestionsPanel from './SuggestionsPanel.vue';
 
 export default {
     name: "DescriptionVideo",
-    components: {
-        SuggestionsPanel
-    },
+    props: ['device'],
     data() {
         return {
             Title: "",
             Artist: "",
             activeTab: "Lyrics",
-            tabs: ['Lyrics', 'Suggestions']
+            tabs: ['Lyrics', 'Infos', 'Album', 'Concerts']
         };
     },
     methods: {
@@ -56,6 +50,7 @@ export default {
         }
     },
     mounted() {
+        if (this.device == "Mobile") this.tabs.append("Suggestion")
     }
 };
 
@@ -70,20 +65,60 @@ window.onYouTubeIframeAPIReady = function() {
 <style>
 
 #mainDescription{
-    background-color: white;
+    margin-top: 0;
+    background-color: black;
+    color: white;
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
-    height: 50%;
+    height: 100%;
+    flex: 0 0 25%;
 }
-.tabs-header{
-    max-height: 8%;
-}
+
 .tabs-content{
     width: 90%;
     max-height: 92%;
 }
+
+.tabs-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    max-height: 8%;
+    width: 100%;
+}
+
+.tab-btn {
+  position: relative;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #0ff;
+  background: transparent;
+  border: 2px solid #0ff;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.25s ease;
+  text-transform: uppercase;
+
+  /* Glow */
+  box-shadow: 0 0 8px #0ff, inset 0 0 8px #0ff;
+}
+
+.tab-btn:hover {
+  color: #fff;
+  background: rgba(0, 255, 255, 0.1);
+  box-shadow: 0 0 15px #0ff, inset 0 0 15px #0ff;
+  transform: translateY(-2px);
+}
+
+.tab-btn.active {
+  color: #000;
+  background: #0ff;
+  box-shadow: 0 0 20px #0ff, inset 0 0 20px #0ff;
+}
+
 
 #LyricsTab{
     display: flex;
@@ -104,6 +139,10 @@ window.onYouTubeIframeAPIReady = function() {
 }
 
 @media screen and (min-width: 428px)  {
+    #mainDescription{
+        margin-top: 10px;
+        height: calc(100% - 10px);
+    }
 }
 
 </style>

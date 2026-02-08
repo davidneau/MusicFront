@@ -1,29 +1,30 @@
 <template>
   <v-app>
-    <Banner ref="banner" @logout="logout" @switchUserConnected="switchUserConnected" :userConnected="userConnected"></Banner>
+    <Banner :device="device" ref="banner" @logout="logout" @setSearchResult="setSearchResult" @switchUserConnected="switchUserConnected" :userConnected="userConnected"></Banner>
     <v-main>
-        <router-view  
-            @playvideo="playvideo" 
+        <router-view @playvideo="playvideo" 
             @descriptionUpdate="descriptionUpdate" 
             @changeplaylist="changeplaylist"
             @switchUserConnected="switchUserConnected"
             :device="device"
-        />
+            id="routerView"
+            v-slot="{ Component }">
+            <component :is="Component" ref="rv" />
+        </router-view>
         <div id="divPlayer">
-            <div id="playerAndDesc">
-                <YoutubePlayer
-                    ref="youtubePlayer" 
-                    id="player" 
-                    :device="device" 
-                    @playvideo="playvideo" 
-                    @closeEvent="close" 
-                    @reduireEvent="reduire" 
-                    @agrandirEvent="agrandir"
-                    @descriptionUpdate="descriptionUpdate"
-                />
-                <Description :device="device" ref="description" @playvideo="playvideo" ></Description>
-            </div>
-            <SuggestionsPanel v-if="device === 'Desktop'" ref="sugg" @playvideo="playvideo"></SuggestionsPanel>
+            <button id="btn-reduire" @click="reduire">Réduire</button>
+            <Description :device="device" ref="description" @playvideo="playvideo" ></Description>
+            <YoutubePlayer
+                ref="youtubePlayer" 
+                id="player" 
+                :device="device" 
+                @playvideo="playvideo" 
+                @close="close" 
+                @reduire="reduire" 
+                @agrandir="agrandir"
+                @descriptionUpdate="descriptionUpdate"
+            />
+            <SuggestionsPanel ref="sugg" @playvideo="playvideo"></SuggestionsPanel>
         </div>
     </v-main>
   </v-app>
@@ -84,6 +85,9 @@ export default {
                 document.getElementById("divPlayer").style.visibility = "visible"
                 document.getElementById("player").style.visibility = "visible"
             }
+            if (payload.from == "search" || payload.from == "histo" || payload.from == "suggestion"){
+                this.agrandir()
+            }
             if (payload.from == "search" || payload.from == "histo" || payload.from == "automatic"){
                 let videoName = this.$refs.youtubePlayer.getVideoName()
                 console.log("video", videoName)
@@ -104,8 +108,7 @@ export default {
                             this.descriptionUpdate({"title": title, "artist": artist})
                             this.$refs.youtubePlayer.setVideoName(response.data["Title"] + " " + response.data["Artist"])
                         }
-                        if(this.device == "Desktop") this.$refs.sugg.fillDiv(response.data['Result'])
-                        else this.$refs.description.fillDivSugg(response.data['Result'])
+                        this.$refs.sugg.fillDiv(response.data['Result'])
                     }
                 })
                 console.log("getVideoName:", this.$refs.youtubePlayer.getVideoName())
@@ -116,25 +119,22 @@ export default {
         },
         agrandir(){
             console.log("agrandir")
-            document.getElementsByTagName("body")[0].style.overflow = "hidden"
-            if (this.device == "Desktop") {
-                document.getElementById("divPlayer").classList.remove("divPlayerMiniature")
-            }
-            else {
-                document.getElementById("divPlayer").classList.remove("playerMiniatureMobile")
-            }
-            document.getElementById("player").classList.remove("playerMiniature")
+            document.getElementById("divPlayer").classList.add("playerFullScreen")
+            document.getElementById("divPlayer").classList.remove("playerMiniature")
+            if (this.device == 'Desktop') document.getElementById("divPlayer").style.top = "60px"
+            document.getElementById("mainDescription").style.display = "flex"
+            document.getElementById("mainSuggestion").style.display = "flex"
+            document.getElementById("btn-reduire").style.visibility = "visible"
+            document.getElementById("btn-agrandir").style.visibility = "hidden"
         },
         reduire(){
             console.log("reduire")
-            document.getElementsByTagName("body")[0].style.overflow = "visible"
-            if (this.device == "Desktop") {
-                document.getElementById("divPlayer").classList.add("divPlayerMiniature")
-            }
-            else {
-                document.getElementById("divPlayer").classList.add("playerMiniatureMobile")
-            }
-            document.getElementById("player").classList.add("playerMiniature")
+            document.getElementById("divPlayer").classList.remove("playerFullScreen")
+            document.getElementById("divPlayer").classList.add("playerMiniature")
+            document.getElementById("mainDescription").style.display = "none"
+            document.getElementById("mainSuggestion").style.display = "none"
+            document.getElementById("btn-reduire").style.visibility = "hidden"
+            document.getElementById("btn-agrandir").style.visibility = "visible"
         },
         close(){
             document.getElementById("divPlayer").style.visibility = "hidden"
@@ -143,6 +143,9 @@ export default {
         },
         logout(){
             this.$router.push('/')
+        },
+        setSearchResult(list){
+            this.$refs.rv.setSearchResult(list)
         },
         async search(fillDivSearch) {
             console.log("a")
@@ -257,7 +260,13 @@ body {
 
 #playerAndDesc{
     flex: 0 0 100%;
-    height: calc(100vh - 91px);
+    height: calc(100vh - 60px);
+}
+
+#btn-reduire{
+    position: absolute;
+    top: 0;
+    right: 0;
 }
 
 #bannerSearch {
@@ -272,26 +281,72 @@ body {
     left: 0;
     right: 0;
     top: 0;
+    z-index: 1000;
+    box-shadow:
+    0 0 12px 2px rgba(120, 220, 255, 0.9),
+    0 0 12px 6px rgba(240, 147, 251, 0.8);
+}
+
+#playerFullScreen{
+    top: 60px;
+    left: 0;
+    right: 0;
 }
 
 #divPlayer{
     display: none;
-    flex-direction: row;
+    flex-direction: column;
     position: absolute;
-    top: 91px;
+    top: 60px;
     width: 100%;
-    height: calc(100% - 91px);
+    height: calc(100% - 60px);
 }
 
 #player{
-    height: 50%;
-    max-height: 50%;
+    height: 100%;
+    flex: 0 0 50%;
+    order: -1;
 }
 
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0b0b0f;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #00f0ff, #ff00f7);
+  border-radius: 10px;
+  background-clip: padding-box;
+  border: 2px solid transparent;
+}
+
+#btn-agrandir{
+    font-size: 20px;
+    background-color: black;
+    color: white;
+}
+
+#btn-reduire{
+    font-size: 16px;
+    background-color: black;
+    color: white;
+}
 
 @media screen and (min-width: 428px)  {
     #playerAndDesc{
         flex: 0 0 70%;
+    }
+
+    #player{
+        order: 0;
+    }
+
+    #divPlayer{
+        flex-direction: row;
     }
 }
 </style>
