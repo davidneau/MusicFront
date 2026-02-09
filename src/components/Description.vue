@@ -34,7 +34,7 @@ export default {
             Title: "",
             Artist: "",
             activeTab: "Lyrics",
-            tabs: ['Lyrics', 'Infos', 'Album', 'Concerts']
+            tabs: ['Lyrics'] /* , 'Infos', 'Album', 'Concerts' */
         };
     },
     methods: {

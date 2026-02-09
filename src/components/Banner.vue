@@ -10,14 +10,14 @@
             </svg>
         </div>
         <div id="buttonsMenu">
-            <router-link v-if="userConnected === 'true'" to="/home" style="justify-content: space-around;">
-                <button class="btn-menu" id="btn-menu" style="padding: 8px 16px;">
+            <router-link v-if="userConnected === 'true'" to="/home" style="justify-content: space-around; text-decoration: none;">
+                <button class="btn-menu btn-menu-banner" id="btn-menu" style="padding: 8px 16px;">
                     <img src="../../assets/menu.png" style="height: 40px;">
                     <p v-if="device=='Desktop'" style="font-size: 20px; font-weight: bold; margin-left: 10px;">Menu</p>
                 </button>
             </router-link>
-            <router-link v-if="userConnected === 'true'" style="justify-content: space-around;" to="/profil">
-                <button class="btn-menu" id="btn-profil" style="padding: 8px 16px;">
+            <router-link v-if="userConnected === 'true'" style="justify-content: space-around;text-decoration: none;" to="/profil">
+                <button class="btn-menu btn-menu-banner" id="btn-profil" style="padding: 8px 16px;">
                     <img src="../../assets/profil.png" style="height: 40px;">
                     <p v-if="device=='Desktop'" style="font-size: 20px; font-weight: bold; margin-left: 10px;">Profil</p>
                 </button>
@@ -189,6 +189,11 @@ export default ({
     box-shadow 0.2s ease,
     filter 0.2s ease;
 }
+
+.btn-menu-banner{
+    padding: 2px 15px !important;
+}
+
 
 @media screen and (min-width: 428px)  {
     .btn-blue-glass {    

@@ -220,10 +220,13 @@ html{
         width: 30%;
     }
 
-    .divPlayerMiniature{
-        position: absolute;
-        width: 100% !important;
-        height: 100% !important;
+    .playerMiniature{
+        width: 20vw !important;
+        left: 80vw !important;
+    }
+
+    .playerMiniature #player{
+        flex: 0 0 100%
     }
 }
 </style>
