@@ -343,7 +343,11 @@ body {
 
     #player{
         order: 0;
-    }
+        z-index: 100;
+        box-shadow:
+            8px 0 15px rgba(124, 252, 0, 0.6),   /* droite */
+            -8px 0 15px rgba(124, 252, 0, 0.6);   /* gauche */
+        }
 
     #divPlayer{
         flex-direction: row;

@@ -36,6 +36,7 @@ export default ({
         height: calc(100vh - 60);
         background-color: black;
         overflow: auto;
+        flex-direction: column;
     }
 
     .musicSugg{

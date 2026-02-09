@@ -141,7 +141,7 @@ html{
 
 .playerFullScreen{
     width: 100% !important;
-    height: 100% !important;
+    height: calc(100% - 60px) !important;
     top: 0;
     left: 0 !important;
     bottom: 0 !important;
