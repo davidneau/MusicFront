@@ -42,4 +42,11 @@ export default ({
     .musicSugg{
         margin: 20px;
     }
+
+    @media screen and (min-width: 428px)  {
+        #mainSuggestion{
+            background-color: rgba(0, 255, 255,0);
+        }
+    }
+
 </style>

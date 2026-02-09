@@ -101,12 +101,26 @@ export default {
                             artist = response.data["Artist"]
                             this.videoName = response.data["Title"] + " " + response.data["Artist"]
                             this.videoIdCurrentlyPlayed = response.data["yt_id"]
-                            this.player.loadVideoById(response.data["yt_id"]);
+                            this.player.loadVideoById({
+                                videoId: response.data["yt_id"],
+                                playerVars: {
+                                    rel: 0,          // 👈 clé importante
+                                    modestbranding: 1,
+                                    controls: 1
+                                }
+                            });
                             this.$emit('descriptionUpdate', {"title": title, "artist": artist})
                         })
                     } else {
                         this.videoIdCurrentlyPlayed = videoId
-                        this.player.loadVideoById(videoId); // Charge une nouvelle vidéo
+                        this.player.loadVideoById({
+                                videoId: videoId,
+                                playerVars: {
+                                    rel: 0,          // 👈 clé importante
+                                    modestbranding: 1,
+                                    controls: 1
+                                }
+                            }) // Charge une nouvelle vidéo
                         this.videoName = videoName
                         this.$emit('descriptionUpdate', {"title": title, "artist": artist})
                     }
@@ -118,7 +132,14 @@ export default {
                     title = music["Title"]
                     artist = "no Data"
                     this.videoIdCurrentlyPlayed = music["id"]
-                    this.player.loadVideoById(music["id"]); // Charge une nouvelle vidéo
+                    this.player.loadVideoById({
+                                videoId: music["id"],
+                                playerVars: {
+                                    rel: 0,          // 👈 clé importante
+                                    modestbranding: 1,
+                                    controls: 1
+                                }
+                            })
                     this.videoName = videoName
                     this.$emit('descriptionUpdate', {"title": title, "artist": artist})
                 }

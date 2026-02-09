@@ -142,6 +142,7 @@ window.onYouTubeIframeAPIReady = function() {
     #mainDescription{
         margin-top: 10px;
         height: calc(100% - 10px);
+        background-color: rgba(0, 255, 255, 0);
     }
 }
 
