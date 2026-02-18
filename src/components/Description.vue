@@ -1,5 +1,8 @@
 <template>
   <div id="mainDescription">
+    <div>
+        <div class="loaderLogo" id="logoDesc"></div>
+    </div>
     <!-- Onglets -->
     <div class="tabs-header">
       <button
@@ -43,6 +46,7 @@ export default {
             .then(async (response) => {
                 console.log("Lyrics", response.data)
                 document.getElementById("Lyrics").innerText = response.data
+                document.getElementById("logoDesc").style.display = "none"
             })
         },
         fillDivSugg(list){
@@ -65,6 +69,8 @@ window.onYouTubeIframeAPIReady = function() {
 <style>
 
 #mainDescription{
+    position: relative;
+    z-index: 2;
     margin-top: 0;
     background-color: black;
     color: white;

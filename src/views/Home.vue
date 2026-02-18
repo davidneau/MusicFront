@@ -1,5 +1,5 @@
 <template>
-    <div id="loaderLogo"></div>
+    <div class="loaderLogo" id="logoSearch"></div>
     <div id="home">
         <div id="searchResult">
             <div id="searchResultDiv" v-for="musicS in listMusicsSearch" :key="musicS">
@@ -8,6 +8,7 @@
                     :artist="musicS['artist']"
                     :album="musicS['album']"
                     :videoId="musicS['id']"
+                    :id_clip="musicS['id_clip']"
                     :img="musicS['img']"
                     from="search"
                 ></Music>
@@ -86,7 +87,7 @@ html{
     background-color: aliceblue;
 }
 
-#loaderLogo {
+.loaderLogo {
     display: none;
     width: 48px;
     height: 48px;

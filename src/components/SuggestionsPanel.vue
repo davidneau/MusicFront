@@ -1,7 +1,14 @@
 <template>
-    <div id="mainSuggestion" style="height: 100%;">
-        <div v-for="music in listMusics" class="musicSugg" :key="music">
-            <Music :title="music.name" :artist="music.artist.name" :img="music.Image" videoId="none" from="search"></Music>
+    <div id="mainSuggestion" style="height: 100%; position: relative;">
+        <div>
+            <div class="loaderLogo" id="logoSugg"></div>
+        </div>
+        <div v-for="music in listMusics" class="musicSugg" :key="music.Title">
+            <Music :title="music.Title" 
+                   :artist="music.Artist" 
+                   :img="music.Image" 
+                   videoId="none" 
+                   from="search"></Music>
         </div>
     </div>
 </template>
@@ -16,13 +23,23 @@ export default ({
     },
     data() {
         return {
-            listMusics: Array()
+            listMusics: []
         };
     },
     methods: {
-        fillDiv(list){
+        sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        },
+        async fillDiv(list){
+            this.listMusics = []
             console.log("fill suggestion div :", list)
-            this.listMusics = list
+            for (const music of list) {
+                this.listMusics.push(music)
+                await this.sleep(100)
+                await this.$nextTick()
+            }
+
+            document.getElementById("logoSugg").style.display = "none"
         }
     },
     async mounted() {
@@ -40,6 +57,7 @@ export default ({
     }
 
     .musicSugg{
+        z-index: 2;
         margin: 20px;
     }
 

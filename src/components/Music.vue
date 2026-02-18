@@ -24,7 +24,8 @@ export default ({
             "from": props.from,
             "title": props.title,
             "artist": props.artist,
-            "id": props.videoId
+            "id": props.videoId,
+            "id_clip": props.id_clip
         }
         
         const handleClick = () => onItemClick(payload)
@@ -32,7 +33,7 @@ export default ({
         return { handleClick }
     },
     name: "divMusic",
-    props: ["title", "artist", "album", "img", "videoId", "from"],
+    props: ["title", "artist", "album", "img", "videoId", "from", "id_clip"],
     methods: {
     }
 });

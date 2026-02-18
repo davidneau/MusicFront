@@ -44,6 +44,7 @@ export default {
         const instance = getCurrentInstance()
         // instance.proxy = le 'this' du composant
         const onItemClick = (payload) => {
+            console.log("payload", payload)
             instance.proxy.playvideo(payload)
         }
 
@@ -73,17 +74,23 @@ export default {
             this.$refs.description.setLyrics()
         },
         async playvideo(payload){
+            this.$refs.sugg.fillDiv([])
+            document.getElementById("Lyrics").innerText = ""
+            document.getElementById("logoDesc").style.display = "block"
+            document.getElementById("logoSugg").style.display = "block"
             document.getElementById("divPlayer").style.display = "flex"
             console.log("playvideo", payload)
             console.log(payload.id == "none")
             if (payload.id == "none"){
                 let music = await getMusic(payload.artist, payload.title)
                 console.log("music", music)
-                payload.id = music.data.id_yt
+                if (music.id_clip) payload.id = music.data.id_clip
+                else payload.id = music.data.id_yt
             }
             if (payload.from == "search" || payload.from == "histo"){
                 document.getElementById("divPlayer").style.visibility = "visible"
                 document.getElementById("player").style.visibility = "visible"
+                if (payload.id_clip !== "Not found" && payload.id_clip !== null && payload.id_clip !== undefined) payload.id = payload.id_clip
             }
             if (payload.from == "search" || payload.from == "histo" || payload.from == "suggestion"){
                 this.agrandir()
@@ -92,7 +99,9 @@ export default {
                 let videoName = this.$refs.youtubePlayer.getVideoName()
                 console.log("video", videoName)
                 if (payload.from == "search" || payload.from == "histo") {
+                    console.log("id", payload)
                     videoName = payload.title + " " + payload.artist
+                    document.getElementById("youtube-player").style.visibility = "visible"
                     this.$refs.youtubePlayer.playNewVideo(payload.id, videoName, payload.from, payload.title, payload.artist)
                     this.$refs.youtubePlayer.setVideoName(payload.title + " " + payload.artist)
                 }
@@ -102,11 +111,13 @@ export default {
                     if (!Object.keys(response.data).includes("Ex")){
                         if (payload.from == "automatic") {
                             console.log("resp", response.data)
-                            let title = response.data["Title"]
-                            let artist = response.data["Artist"]
-                            this.$refs.youtubePlayer.player.loadVideoById(response.data["yt_id"]);
+                            let title = response.data.music["Title"]
+                            let artist = response.data.music["Artist"]
+                            document.getElementById("youtube-player").style.visibility = "visible"
+                            this.$refs.youtubePlayer.player.loadVideoById(response.data.music["id_yt"]);
                             this.descriptionUpdate({"title": title, "artist": artist})
-                            this.$refs.youtubePlayer.setVideoName(response.data["Title"] + " " + response.data["Artist"])
+                            this.$refs.youtubePlayer.setVideoName(response.data.music["Title"] + " " + response.data.music["Artist"])
+                            payload.done()
                         }
                         this.$refs.sugg.fillDiv(response.data['Result'])
                     }
@@ -265,6 +276,8 @@ body {
 
 #btn-reduire{
     position: absolute;
+    cursor: pointer;
+    z-index: 3;
     top: 0;
     right: 0;
 }

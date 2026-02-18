@@ -1,7 +1,10 @@
 <template>
-  <div>
+  <div style="position: relative;">
+    <div id="background">
+        <div class="loaderLogo" id="logoPlayer" style="display: block;"></div>
+    </div>
     <button id="btn-agrandir" style="visibility: hidden;" @click="$emit('agrandir')">⛶</button>
-    <div id="youtube-player"></div>
+    <div id="youtube-player" style="z-index: 2; position: absolute;"></div>
   </div>
 </template>
 
@@ -18,7 +21,11 @@ export default {
             isAPIReady: false, // Flag pour savoir si l'API YouTube est prête
             playListCursor: 0,
             playList: [],
-            videoIdCurrentlyPlayed: ""
+            videoIdCurrentlyPlayed: "",
+            isTransitioning: false,
+            watchdogTimer: null,
+            watchdogDelay: 6000, // 6 secondes max pour démarrer
+            hasStarted: false
         };
     },
     mounted() {
@@ -52,6 +59,27 @@ export default {
                 console.error("L'API YouTube n'est pas encore prête.");
             }
         },
+        startWatchdog(videoId) {
+
+            clearTimeout(this.watchdogTimer);
+
+            this.watchdogTimer = setTimeout(() => {
+
+                if (!this.hasStarted) {
+                    console.warn("⚠️ Vidéo bloquée (probable 403) :", videoId);
+                    this.skipToNext();
+                }
+
+            }, this.watchdogDelay);
+        },
+        onPlayerError(event) {
+
+            console.warn("Erreur YouTube :", event.data);
+
+            clearTimeout(this.watchdogTimer);
+
+            this.skipToNext();
+        },
         // Crée l'instance du lecteur YouTube
         createPlayer() {
             if (this.isAPIReady) {
@@ -65,15 +93,83 @@ export default {
                 console.error("L'API YouTube n'est pas encore prête.");
             }
         },
+        handleVideoEnd() {
+            return new Promise((resolve) => {
+                this.$emit("playvideo", {
+                    from: "automatic",
+                    done: resolve   // 👈 callback pour débloquer
+                })
+            })
+        },
+        async loadAndWatch(videoId) {
+            this.player.loadVideoById(videoId);
+
+            const timeout = 5000; // 5 secondes max pour démarrer
+
+            const started = await new Promise((resolve) => {
+
+                const checkPlaying = (event) => {
+                    if (event.data === window.YT.PlayerState.PLAYING) {
+                        this.player.removeEventListener("onStateChange", checkPlaying);
+                        resolve(true);
+                    }
+                };
+
+                this.player.addEventListener("onStateChange", checkPlaying);
+
+                setTimeout(() => {
+                    this.player.removeEventListener("onStateChange", checkPlaying);
+                    resolve(false);
+                }, timeout);
+            });
+
+            if (!started) {
+                console.log("Vidéo bloquée (probable 403)");
+                this.skipToNext();
+            }
+        },
+        async loadVideoWithWatchdog(videoId) {
+            if (this.isTransitioning) return;
+            this.isTransitioning = true;
+            this.hasStarted = false;
+
+            console.log("Chargement vidéo :", videoId);
+
+            this.player.loadVideoById(videoId);
+
+            this.startWatchdog(videoId);
+        },
+        skipToNext() {
+            this.isTransitioning = false;
+            clearTimeout(this.watchdogTimer);
+
+            if (this.playList.length > 0) {
+                this.playNewVideo(this.playListCursor + 1, "", "playlist");
+            } else {
+                this.$emit("playvideo", { from: "automatic" });
+            }
+        },
         // Gère les changements d'état du lecteur
-        onPlayerStateChange(event) {
-            if (event.data === window.YT.PlayerState.ENDED) {
-                console.log('La vidéo est terminée');
-            /*     if (this.playList.length == 0) this.playNewVideo("")
-                else this.playNewVideo(this.playListCursor+1, "", "playlist")
-             */    
-                if (this.playList.length == 0) this.$emit("playvideo", {"from" : "automatic"})
-                else this.playNewVideo(this.playListCursor+1, "", "playlist")
+        async onPlayerStateChange(event) {
+            switch (event.data) {
+                case window.YT.PlayerState.PLAYING:
+                    console.log("Lecture démarrée");
+                    this.hasStarted = true;
+                    this.isTransitioning = false;
+                    clearTimeout(this.watchdogTimer);
+                    break;
+
+                case window.YT.PlayerState.ENDED:
+                    console.log("Vidéo terminée");
+                    setTimeout(() => this.handleVideoEnd(), 3000);
+                    break;
+
+                case window.YT.PlayerState.BUFFERING:
+                    console.log("Buffering...");
+                    break;
+                case window.YT.PlayerState.CUED:
+                    console.log("Vidéo prête");
+                    break;
             }
         },
         setPlayList(playList){
@@ -101,26 +197,30 @@ export default {
                             artist = response.data["Artist"]
                             this.videoName = response.data["Title"] + " " + response.data["Artist"]
                             this.videoIdCurrentlyPlayed = response.data["yt_id"]
+                            this.player.mute()
                             this.player.loadVideoById({
                                 videoId: response.data["yt_id"],
                                 playerVars: {
                                     rel: 0,          // 👈 clé importante
                                     modestbranding: 1,
-                                    controls: 1
+                                    controls: 0
                                 }
                             });
+                            this.player.unMute()
                             this.$emit('descriptionUpdate', {"title": title, "artist": artist})
                         })
                     } else {
                         this.videoIdCurrentlyPlayed = videoId
+                        this.player.mute()
                         this.player.loadVideoById({
                                 videoId: videoId,
                                 playerVars: {
                                     rel: 0,          // 👈 clé importante
                                     modestbranding: 1,
-                                    controls: 1
+                                    controls: 0
                                 }
                             }) // Charge une nouvelle vidéo
+                        this.player.unMute()
                         this.videoName = videoName
                         this.$emit('descriptionUpdate', {"title": title, "artist": artist})
                     }
@@ -137,7 +237,7 @@ export default {
                                 playerVars: {
                                     rel: 0,          // 👈 clé importante
                                     modestbranding: 1,
-                                    controls: 1
+                                    controls: 0
                                 }
                             })
                     this.videoName = videoName
@@ -159,6 +259,15 @@ export default {
 </script>
 
 <style>
+
+    #background{
+        background-color: grey;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
 
     #youtube-player{
         display: block;
@@ -186,6 +295,8 @@ export default {
     }
 
     #btn-agrandir{
+        z-index: 3;
+        cursor: pointer;
         position: absolute;
         top: 0;
         right: 0;

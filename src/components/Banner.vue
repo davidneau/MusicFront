@@ -55,11 +55,11 @@ export default ({
         async searching() {
             let searchstr = document.getElementById('search').value
             document.getElementById("historique").innerHTML = ""
-            document.getElementById("loaderLogo").style.display = "block"
+            document.getElementById("logoSearch").style.display = "block"
             document.getElementById("searchResult").style.display = "none"
             let musicVideos = await searchMusic(searchstr)
             console.log(musicVideos.data)
-            document.getElementById("loaderLogo").style.display = "none"
+            document.getElementById("logoSearch").style.display = "none"
             document.getElementById("searchResult").style.display = "flex"
             this.$emit('setSearchResult', musicVideos.data)
         }
