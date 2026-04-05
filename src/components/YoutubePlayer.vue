@@ -370,6 +370,8 @@ window.onYouTubeIframeAPIReady = function () {
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
+    z-index: 10000;
+    color: white;
 }
 
 @media screen and (min-width: 428px) {
