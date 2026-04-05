@@ -44,7 +44,6 @@ export default {
         setLyrics() {
             getLyrics(this.Artist, this.Title)
             .then(async (response) => {
-                console.log("Lyrics", response.data)
                 document.getElementById("Lyrics").innerText = response.data
                 document.getElementById("logoDesc").style.display = "none"
             })

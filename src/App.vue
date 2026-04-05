@@ -60,7 +60,9 @@ export default {
         SuggestionsPanel
     },
     data: () => ({
-        device: ""
+        device: "",
+        playlist: [],
+        enchainement_music: 0,
         //
     }),
     methods: {
@@ -81,6 +83,9 @@ export default {
             document.getElementById("divPlayer").style.display = "flex"
             console.log("playvideo", payload)
             console.log(payload.id == "none")
+            if (payload.id == "automatic" && this.playlist != []){
+                return
+            }
             if (payload.id == "none"){
                 let music = await getMusic(payload.artist, payload.title)
                 console.log("music", music)
@@ -110,14 +115,24 @@ export default {
                     console.log("getSimilarTrack : ", response.data)
                     if (!Object.keys(response.data).includes("Ex")){
                         if (payload.from == "automatic") {
+                            this.enchainement_music += 1
+                            if (this.enchainement_music == 5){
+                                alert("êtes vous encore là?");
+                                this.enchainement_music = 0;
+                            }
                             console.log("resp", response.data)
                             let title = response.data.music["Title"]
                             let artist = response.data.music["Artist"]
                             document.getElementById("youtube-player").style.visibility = "visible"
-                            this.$refs.youtubePlayer.player.loadVideoById(response.data.music["id_yt"]);
                             this.descriptionUpdate({"title": title, "artist": artist})
                             this.$refs.youtubePlayer.setVideoName(response.data.music["Title"] + " " + response.data.music["Artist"])
-                            payload.done()
+                            
+                            console.log(this.playlist)
+                            this.playlist = response.data.Result.map(track => track.id_yt)
+                            this.$refs.youtubePlayer.player.loadPlaylist(this.playlist);
+                            
+
+                            //payload.done()
                         }
                         this.$refs.sugg.fillDiv(response.data['Result'])
                     }
