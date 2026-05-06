@@ -29,9 +29,24 @@ export function createPlaylist(payload) {
     return API.post('/createPlaylist', payload);
 }
 
+export function createPlaylist2(payload) {
+    console.log("createPlaylist2")
+    return API.post('/createPlaylist2', payload);
+}
+
+export function addSongToPlaylist(payload) {
+    console.log("addSongToPlaylist")
+    return API.post('/addSongToPlaylist', payload);
+}
+
 export function getPlaylist(playlistName) {
     console.log("getPlaylist")
     return API.post('/getPlaylist/' + playlistName);
+}
+
+export function getPlaylist2() {
+    console.log("getPlaylist2")
+    return API.post('/getPlaylist2/');
 }
 
 export function searchYT(searchStr) {
@@ -44,6 +59,13 @@ export function getLyrics(Artist, Title) {
     return API.get('/getLyrics', {params: {
         title: Title,
         artist: Artist
+    }})
+}
+
+export function getMusicFromVideoID(id) {
+    console.log("getMusicFromVideoID")
+    return API.get('/getMusicFromVideoID', {params: {
+        id: id,
     }})
 }
 

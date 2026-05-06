@@ -10,6 +10,12 @@
             </svg>
         </div>
         <div id="buttonsMenu">
+            <router-link v-if="userConnected === 'true'" style="justify-content: space-around;text-decoration: none;" to="/playlist">
+                <button class="btn-menu btn-menu-banner" id="btn-profil" style="padding: 8px 16px;">
+                    <img src="../../assets/playlist.png" style="height: 40px;">
+                    <p v-if="device=='Desktop'" style="font-size: 20px; font-weight: bold; margin-left: 10px;">Playlist</p>
+                </button>
+            </router-link>
             <router-link v-if="userConnected === 'true'" to="/home" style="justify-content: space-around; text-decoration: none;">
                 <button class="btn-menu btn-menu-banner" id="btn-menu" style="padding: 8px 16px;">
                     <img src="../../assets/menu.png" style="height: 40px;">
@@ -108,7 +114,7 @@ export default ({
 }
 
 #buttonsMenu{
-    flex: 0 0 15%;
+    flex: 0 0 30%;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -117,7 +123,7 @@ export default ({
 }
 
 #divLogo{
-    flex: 0 0 15%;
+    flex: 0 0 30%;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -152,14 +158,14 @@ export default ({
     cursor: pointer;
 
     box-shadow:
-        0 0 12px 4px rgba(120, 220, 255, 0.9),
-        0 0 12px 12px rgba(240, 147, 251, 0.8);
+        0 0 12px 2px rgba(120, 220, 255, 0.9),
+        0 0 12px 6px rgba(240, 147, 251, 0.8);
 }
 
 .btn-menu:hover {
   box-shadow:
-    0 0 12px 6px rgba(120, 220, 255, 1),
-    0 0 12px 18px rgba(240, 147, 251, 1);
+    0 0 12px 4px rgba(120, 220, 255, 1),
+    0 0 12px 12px rgba(240, 147, 251, 1);
 }
 
 .btn-blue-glass {

@@ -6,6 +6,8 @@
             @descriptionUpdate="descriptionUpdate" 
             @changeplaylist="changeplaylist"
             @switchUserConnected="switchUserConnected"
+            @reduire="reduire"
+            @displayPlaylist="displayPlaylist"
             :device="device"
             id="routerView"
             v-slot="{ Component }">
@@ -35,7 +37,7 @@ import YoutubePlayer from './components/YoutubePlayer.vue';
 import Description from './components/Description.vue';
 import Banner from './components/Banner.vue';
 import SuggestionsPanel from './components/SuggestionsPanel.vue'
-import { searchMusic, getMusic, ON_ITEM_CLICK, getSimilarTrack } from './api';
+import { searchMusic, getMusic, ON_ITEM_CLICK, getSimilarTrack, getPlaylist2 } from './api';
 import { provide, getCurrentInstance  } from 'vue'
 
 export default {
@@ -75,6 +77,9 @@ export default {
             this.$refs.description.Artist = payload.artist
             this.$refs.description.setLyrics()
         },
+        displayPlaylist(payload){
+            this.$refs.sugg.fillPlaylist(payload.playlist)
+        },
         async playvideo(payload){
             this.$refs.sugg.fillDiv([])
             document.getElementById("Lyrics").innerText = ""
@@ -93,6 +98,7 @@ export default {
                 else payload.id = music.data.id_yt
             }
             if (payload.from == "search" || payload.from == "histo"){
+                this.$refs.youtubePlayer.playlistLoaded = false
                 document.getElementById("divPlayer").style.visibility = "visible"
                 document.getElementById("player").style.visibility = "visible"
                 if (payload.id_clip !== "Not found" && payload.id_clip !== null && payload.id_clip !== undefined) payload.id = payload.id_clip
@@ -100,43 +106,44 @@ export default {
             if (payload.from == "search" || payload.from == "histo" || payload.from == "suggestion"){
                 this.agrandir()
             }
-            if (payload.from == "search" || payload.from == "histo" || payload.from == "automatic"){
-                let videoName = this.$refs.youtubePlayer.getVideoName()
-                console.log("video", videoName)
-                if (payload.from == "search" || payload.from == "histo") {
-                    console.log("id", payload)
-                    videoName = payload.title + " " + payload.artist
-                    document.getElementById("youtube-player").style.visibility = "visible"
-                    this.$refs.youtubePlayer.playNewVideo(payload.id, videoName, payload.from, payload.title, payload.artist)
-                    this.$refs.youtubePlayer.setVideoName(payload.title + " " + payload.artist)
-                }
-                getSimilarTrack(videoName)
-                .then(async (response) => {
-                    console.log("getSimilarTrack : ", response.data)
-                    if (!Object.keys(response.data).includes("Ex")){
-                        if (payload.from == "automatic") {
+            if (payload.from == "search" || payload.from == "histo" || payload.from == "automatic" || payload.from == "playlist"){
+                if (payload.playlist) {
+                    console.log("play playlist")
+                    this.$refs.youtubePlayer.autoPlayCount = 0
+                    this.$refs.youtubePlayer.player.loadPlaylist(payload.playlist);
+                } else {
+                    let videoName = this.$refs.youtubePlayer.getVideoName()
+                    console.log("video", videoName)
+                    if (payload.from == "search" || payload.from == "histo") {
+                        console.log("id", payload)
+                        videoName = payload.title + " " + payload.artist
+                        document.getElementById("youtube-player").style.visibility = "visible"
+                        //this.$refs.youtubePlayer.playNewVideo(payload.id, videoName, payload.from, payload.title, payload.artist)
+                        this.$refs.youtubePlayer.setVideoName(payload.title + " " + payload.artist)
+                    }
+                    getSimilarTrack(videoName)
+                    .then(async (response) => {
+                        console.log("getSimilarTrack : ", response.data)
+                        if (!Object.keys(response.data).includes("Ex")){
                             this.enchainement_music += 1
                             if (this.enchainement_music == 5){
                                 alert("êtes vous encore là?");
                                 this.enchainement_music = 0;
                             }
-                            console.log("resp", response.data)
-                            let title = response.data.music["Title"]
-                            let artist = response.data.music["Artist"]
+                            console.log("reponse de GetSimilarTrack : ", response.data)
                             document.getElementById("youtube-player").style.visibility = "visible"
-                            this.descriptionUpdate({"title": title, "artist": artist})
-                            this.$refs.youtubePlayer.setVideoName(response.data.music["Title"] + " " + response.data.music["Artist"])
-                            
-                            console.log(this.playlist)
-                            this.playlist = response.data.Result.map(track => track.id_yt)
+                            //this.$refs.youtubePlayer.setVideoName(response.data.music["Title"] + " " + response.data.music["Artist"])
+                            this.playlist = [payload.id]
+                            response.data.Result.forEach(track => this.playlist.push(track.id_yt))
+                            console.log("Playlist chargée :", this.playlist)
+                            this.$refs.youtubePlayer.autoPlayCount = 0
                             this.$refs.youtubePlayer.player.loadPlaylist(this.playlist);
-                            
 
                             //payload.done()
+                            this.$refs.sugg.fillDiv(response.data['Result'])
                         }
-                        this.$refs.sugg.fillDiv(response.data['Result'])
-                    }
-                })
+                    })
+                }
                 console.log("getVideoName:", this.$refs.youtubePlayer.getVideoName())
             }
         },
@@ -261,10 +268,19 @@ export default {
         },
     },
     mounted(){        
+        /* localStorage.setItem('userConnected', false);
+        this.$refs.banner.userConnected = false */
         let largeurEcran = window.innerWidth || document.documentElement.clientWidth;
         if (largeurEcran > 428) this.device = "Desktop"
         else this.device == "Mobile"
         console.log("device : ", this.device)
+        console.log("user connected : ", this.$refs.banner.userConnected)
+        if (this.$refs.banner.userConnected){
+            getPlaylist2().then((response) => {
+                console.log("playlists loaded :", response.data.Playlist)
+                localStorage.setItem("Playlists", JSON.stringify(response.data.Playlist))
+            })
+        }
     }
 }
 </script>
@@ -328,6 +344,7 @@ body {
     top: 60px;
     width: 100%;
     height: calc(100% - 60px);
+    background-color: black;
 }
 
 #player{
@@ -362,6 +379,23 @@ body {
     font-size: 16px;
     background-color: black;
     color: white;
+}
+
+.playlistPopup{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: green;
+    border: 1px solid black;
+    border-radius: 15px;
+    height: 10vh;
+    width: 30vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    color: white
 }
 
 @media screen and (min-width: 428px)  {

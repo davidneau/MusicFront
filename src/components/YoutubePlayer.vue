@@ -5,6 +5,20 @@
         </div>
         <button id="btn-agrandir" style="visibility: hidden;" @click="$emit('agrandir')">⛶</button>
         <div id="youtube-player" style="z-index: 2; position: absolute;"></div>
+        <div id="subPlayer">
+            <div>
+                <button @click="previous">Prev</button>
+                <button @click="next">Next</button>
+            </div>
+            <button @click="showAddPlaylistPopup = true">Add to playlist</button>
+        </div>
+
+        <div class="playlistPopup" v-show="showAddPlaylistPopup" style="flex-direction: column; z-index: 100000;">
+            <h1>Add to playlist :</h1>
+            <select id="selectPlaylist">
+            </select>
+            <button @click="addSongToPlaylistYT">Ok</button>
+        </div>
         
         <div v-if="showHumanPopup" class="human-popup-overlay">
             <div class="human-popup">
@@ -16,7 +30,7 @@
 </template>
 
 <script>
-import { getSimilarTrack } from '@/api';
+import { getSimilarTrack, getMusicFromVideoID, addSongToPlaylist } from '@/api';
 
 export default {
   name: "YoutubePlayer",
@@ -40,12 +54,14 @@ export default {
         autoPlayCount: 0,
         lastPlaylistIndex: -1,
         lastVideoId: null,
+        showAddPlaylistPopup: false
     };
   },
 
   mounted() {
     window.vueInstance = this;
     this.loadYouTubeAPI();
+    this.loadPlaylist();
   },
 
   beforeUnmount() {
@@ -58,6 +74,36 @@ export default {
   },
 
   methods: {
+    loadPlaylist(){
+        let playlists = JSON.parse(localStorage.getItem("Playlists"))
+        console.log(playlists)
+        console.log(typeof playlists)
+        Object.keys(playlists).forEach((key) => {
+            console.log(key)
+            let option = document.createElement("option")
+            option.value = key
+            option.innerText = key
+            document.getElementById("selectPlaylist").appendChild(option)
+        })
+    },
+    addSongToPlaylistYT(){
+        const currentIndex = this.player.getPlaylistIndex?.();
+        const playlist2 = this.player.getPlaylist?.() || [];
+        const currentVideoId = playlist2[currentIndex] || this.player.getVideoData?.().video_id;
+        let playlist = document.getElementById("selectPlaylist").value
+        console.log({videoID: currentVideoId, nomPlaylist: playlist})
+        addSongToPlaylist({videoID: currentVideoId, nomPlaylist: playlist})
+        .then(() => {
+            alert(`l'id de la video ${currentVideoId} a été ajouté à la playlist ${playlist}`)
+            this.showAddPlaylistPopup = false
+        })
+    },
+    next(){
+        this.player.nextVideo()
+    },
+    previous(){
+        this.player.previousVideo()
+    },
     waitForHumanClick() {
         return new Promise((resolve) => {
             this.humanActionResolver = resolve;
@@ -176,16 +222,23 @@ export default {
             case window.YT.PlayerState.PLAYING: {
                 const currentIndex = this.player.getPlaylistIndex?.();
                 const playlist = this.player.getPlaylist?.() || [];
-                const currentVideoId =
-                    playlist[currentIndex] || this.player.getVideoData?.().video_id;
+                const currentVideoId = playlist[currentIndex] || this.player.getVideoData?.().video_id;
+
 
                 // Première vidéo
                 if (this.lastPlaylistIndex === -1) {
                     this.lastPlaylistIndex = currentIndex;
                     this.lastVideoId = currentVideoId;
+                    let music = await getMusicFromVideoID(currentVideoId)
+                    console.log(music)
+                    this.$emit('descriptionUpdate', {"title": music.data['Title'], "artist": music.data["Artist"]});
                     return;
                 }
 
+                console.log(currentIndex)
+                console.log(currentVideoId)
+                console.log(this.lastPlaylistIndex)
+                console.log(this.lastVideoId)
                 // Nouvelle vidéo détectée
                 if (
                     currentIndex !== this.lastPlaylistIndex ||
@@ -193,6 +246,11 @@ export default {
                 ) {
                     this.autoPlayCount++;
                     console.log("🎵 Changement de vidéo, compteur =", this.autoPlayCount);
+
+                    
+                    let music = await getMusicFromVideoID(currentVideoId)
+                    console.log(music)
+                    this.$emit('descriptionUpdate', {"title": music.data['Title'], "artist": music.data["Artist"]});
 
                     this.lastPlaylistIndex = currentIndex;
                     this.lastVideoId = currentVideoId;
@@ -217,13 +275,13 @@ export default {
                 console.log("Vidéo prête");
                 break;
 
-            case window.YT.PlayerState.ENDED:
+            /* case window.YT.PlayerState.ENDED:
                 console.log("Vidéo terminée → prochaine dans 2 secondes");
 
                 if (!this.playlistLoaded) this.skipToNext();
 
                 this.playlistLoaded = true
-                break;
+                break; */
         }
     },
 
@@ -327,7 +385,29 @@ window.onYouTubeIframeAPIReady = function () {
 #youtube-player {
   display: block;
   width: 100%;
-  height: 100%;
+  height: 90%;
+}
+
+#subPlayer {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    top: 90%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    background-color: black;
+}
+
+
+#subPlayer div{
+    flex: 0 0 30%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
 }
 
 #buttonDiv {

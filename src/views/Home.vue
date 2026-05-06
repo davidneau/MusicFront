@@ -61,7 +61,7 @@ export default ({
             console.log("device :", this.device)
             let histo = await loadHistorique()
             console.log(histo.data)
-            this.listMusicsHisto = histo.data.splice(20)
+            this.listMusicsHisto = histo.data
         },
         logout(){
             this.$router.push('/')
@@ -73,6 +73,9 @@ export default ({
     async mounted() {
         this.init()
         document.title = 'MusicDA';
+    },
+    unmounted(){
+        this.$emit('reduire')
     }
 });
 </script>
@@ -161,7 +164,7 @@ html{
 }
 
 .playerMiniature{
-    top: 80vh !important;
+    top: 78vh !important;
     left: 50vw !important;
     right: 0 !important;
     bottom: 0 !important;
@@ -223,7 +226,7 @@ html{
 
     .playerMiniature{
         width: 20vw !important;
-        left: 80vw !important;
+        left: 78vw !important;
     }
 
     .playerMiniature #player{
