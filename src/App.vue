@@ -28,6 +28,7 @@
             />
             <SuggestionsPanel ref="sugg" @playvideo="playvideo"></SuggestionsPanel>
         </div>
+        <AddMusicToPlaylistPopup v-show="showAddPlaylistPopup" @closePopup="closePopup" :music_id="music_id" ref="amtp"></AddMusicToPlaylistPopup>
     </v-main>
   </v-app>
 </template>
@@ -37,8 +38,9 @@ import YoutubePlayer from './components/YoutubePlayer.vue';
 import Description from './components/Description.vue';
 import Banner from './components/Banner.vue';
 import SuggestionsPanel from './components/SuggestionsPanel.vue'
-import { searchMusic, getMusic, ON_ITEM_CLICK, getSimilarTrack, getPlaylist2 } from './api';
+import { searchMusic, getMusic, ON_ITEM_CLICK, OPEN_AMTP_POPUP, getSimilarTrack } from './api';
 import { provide, getCurrentInstance  } from 'vue'
+import AddMusicToPlaylistPopup from '@/components/AddMusicToPlaylistPopup.vue';
 
 export default {
     setup() {
@@ -49,9 +51,12 @@ export default {
             console.log("payload", payload)
             instance.proxy.playvideo(payload)
         }
-
         provide(ON_ITEM_CLICK, onItemClick)
 
+        const open_amtp_popup = (payload) => {
+            instance.proxy.openAddMusicToPlaylistPopup(payload)
+        }
+        provide(OPEN_AMTP_POPUP, open_amtp_popup)
         return {}
     },
     name: 'App',
@@ -59,19 +64,30 @@ export default {
         YoutubePlayer,
         Description,
         Banner,
-        SuggestionsPanel
+        SuggestionsPanel,
+        AddMusicToPlaylistPopup
     },
     data: () => ({
         device: "",
         playlist: [],
         enchainement_music: 0,
-        //
+        showAddPlaylistPopup: false,
+        music_id: ""
     }),
     methods: {
+        openAddMusicToPlaylistPopup(music_id){
+            this.music_id = music_id
+            this.$refs.amtp.loadPlaylist()
+            this.showAddPlaylistPopup= true
+        },
+        closePopup(){
+            this.showAddPlaylistPopup = false
+        },
         switchUserConnected(){
             this.$refs.banner.connectedUserBanner()
         },
         descriptionUpdate(payload){
+
             console.log("descriptionUpdate", payload)
             this.$refs.description.Title = payload.title
             this.$refs.description.Artist = payload.artist
@@ -110,6 +126,11 @@ export default {
                 if (payload.playlist) {
                     console.log("play playlist")
                     this.$refs.youtubePlayer.autoPlayCount = 0
+                    for (let i = payload.playlist.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [payload.playlist[i], payload.playlist[j]] = [payload.playlist[j], payload.playlist[i]];
+                    }
+                    
                     this.$refs.youtubePlayer.player.loadPlaylist(payload.playlist);
                 } else {
                     let videoName = this.$refs.youtubePlayer.getVideoName()
@@ -275,12 +296,6 @@ export default {
         else this.device == "Mobile"
         console.log("device : ", this.device)
         console.log("user connected : ", this.$refs.banner.userConnected)
-        if (this.$refs.banner.userConnected){
-            getPlaylist2().then((response) => {
-                console.log("playlists loaded :", response.data.Playlist)
-                localStorage.setItem("Playlists", JSON.stringify(response.data.Playlist))
-            })
-        }
     }
 }
 </script>

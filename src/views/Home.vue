@@ -10,6 +10,7 @@
                     :videoId="musicS['id']"
                     :id_clip="musicS['id_clip']"
                     :img="musicS['img']"
+                    :btnATP=true
                     from="search"
                 ></Music>
             </div>
@@ -25,6 +26,7 @@
                     :album="music['StatMusic3']['Album']"
                     :img="music['StatMusic3']['Image']"
                     :videoId="music['id_yt']"
+                    :btnATP=true
                     from="histo"
                 ></Music>
             </div>

@@ -35,7 +35,7 @@ export function createPlaylist2(payload) {
 }
 
 export function addSongToPlaylist(payload) {
-    console.log("addSongToPlaylist")
+    console.log("addSongToPlaylist", payload)
     return API.post('/addSongToPlaylist', payload);
 }
 
@@ -103,6 +103,7 @@ export function getSimilarTrack(track) {
 }
 
 export const ON_ITEM_CLICK = Symbol("onItemClick")
+export const OPEN_AMTP_POPUP = Symbol("open_amtp_popup")
 
 API.interceptors.request.use(config => {
     const token = localStorage.getItem('token');

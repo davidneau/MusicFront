@@ -1,22 +1,23 @@
 <template>
-    <div>
-        <div>
+    <div class="mainPlaylists">
+        <!-- <div style="visibility: hidden;">
             <h4 style="color:white">Enter the Playlist ID from youtube :</h4>
             <input type="text" id="playlistID" style="width: 200px;" @keypress="createPlaylist">
         </div>
-        <div id="playlists">
+        <div id="playlists" style="visibility: hidden;">
             <div style="color:white">Playlist from yt</div>
             <div id="contentPlaylist"></div>
-        </div>
+        </div> -->
+        <h1>Playlists</h1>
         <div id="playlists2">
             <button @click="createPlaylistPopup = true">Create Playlist</button>
             
             <div v-for="ind in titlePlaylists.length" class="playlists" :key="ind">
                 <h2 style="margin-left: 20px;">{{ titlePlaylists[ind-1] }}</h2>
                 <button @click="playPlaylist(listPlaylists[ind-1])">Play</button>
-                <div v-if="Object.keys(listPlaylists[ind-1]).length !== 0">
+                <div style="width: 90%;" v-if="Object.keys(listPlaylists[ind-1]).length !== 0">
                     <div class="playlist">
-                        <div v-for="music in listPlaylists[ind-1]" id="playlists" :key="music.Title">
+                        <div v-for="music in listPlaylists[ind-1]" class="playlists" :key="music.Title">
                             <Music :title="music.Title" 
                                 :artist="music.Artist" 
                                 :img="music.Image" 
@@ -36,14 +37,17 @@
                 <p>Name :</p>
                 <input type="text" v-model="namePlaylist">
             </div>
-            <button @click="createPlaylistYT">Create Playlist</button>
+            <div>
+                <button @click="createPlaylistPopup = false">Annuler</button>
+                <button @click="createPlaylistYT">Create Playlist</button>
+            </div>
         </div>
     </div>
 </template>
 
 
 <script>
-import { createPlaylist, getPlaylist, getPlaylist2, createPlaylist2 } from '@/api';
+import { createPlaylist, getPlaylist2, createPlaylist2 } from '@/api';
 import Music from '../components/Music.vue';
 
 export default ({
@@ -78,51 +82,6 @@ export default ({
                 this.createPlaylistPopup = false
             })
         },
-        getPlaylist() {
-            getPlaylist("playlist YT 1")
-            .then((response) => {
-                response.data.forEach(item => {
-                    let div = document.createElement("div")
-                    div.id = item.id
-                    div.className = "searchOneResult"
-
-                    div.onclick = () => {
-                        console.log("item", item)
-
-                        this.$emit('descriptionUpdate', {"title": item['Title'], "artist": "no data"})
-                        this.$emit('playvideo', {"id": item["id"], 
-                                                 "from": "playlist", 
-                                                 "title": item["Title"], 
-                                                 "artist": ""})
-                        this.$emit('changeplaylist', {"playlist": response.data})
-
-                        document.getElementById("player").style.display = "block"
-                        document.getElementById("divPlayer").style.display = "flex"
-                        document.getElementById("divPlayer").classList.remove("playerMiniature")
-                        document.getElementById("divPlayer").classList.remove("playerMiniatureMobile")
-                        document.getElementById("divPlayer").style.visibility = "visible"
-                        document.getElementById("player").style.visibility = "visible"
-                    }
-
-                    console.log(item)
-                    let img = document.createElement("img")
-                    img.src = item["img"]
-                    div.appendChild(img)
-
-                    let divDesc = document.createElement("div")
-                    divDesc.className = "divDesc"
-
-                    let title = document.createElement("h2")
-                    title.textContent = item["Title"]
-
-                    divDesc.appendChild(title)
-
-                    div.appendChild(divDesc)
-
-                    document.getElementById("contentPlaylist").appendChild(div)
-                });
-            })
-        },
         getPlaylistYT() {
             getPlaylist2()
             .then((response) => {
@@ -149,14 +108,35 @@ export default ({
     display: flex;
 }
 
+#playlistPopup{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    background-color: green;
+    border-radius: 15px;
+    border: 1px solid black;
+    height: 15vh;
+    padding: 10px;
+}
+
+.mainPlaylists{
+    margin-top: 20px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .playlists{
     color: white;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid white;
     border-radius: 15px;
+    min-width: 15%;
     height: 150px;
 }
 
@@ -187,7 +167,42 @@ export default ({
     min-width: 15%;
 }
 
+.playlists>div{
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 20px;
+    padding-right: 5px;
+}
+
+.playlists>div>img{
+    z-index: 20;
+}
+
+.playlist>div>div{
+    overflow: hidden;
+}
+
+.textMusicDiv>h2{
+    overflow: hidden;
+    white-space: nowrap;
+    transition: transform 0.5s linear;
+}
+
+.textMusicDiv:hover h2 {
+    animation: scroll-text 5s linear forwards;
+}
+
+@keyframes scroll-text {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
 #playlists2{
     margin-top: 50px;
+    width: 100%;
 }
 </style>
