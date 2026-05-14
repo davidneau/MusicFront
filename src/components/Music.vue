@@ -2,7 +2,7 @@
     <div class="musicDiv btn-menu">
         <div @click="handleClick" class="flexRow">
             <img v-if="img == 'https://upload.wikimedia.org/wikipedia/commons/9/97/Music_-_The_Noun_Project.svg'" style='filter: invert(1);' :src=img height="60px" width="60px">
-            <img v-else :src=img height="60px" width="60px">
+            <img v-else :src=img height="60px" width="60px" referrerpolicy="no-referrer">
             <div class="textMusicDiv">
                 <h2>{{ title }}</h2>
                 <h3>{{ artist }}</h3>

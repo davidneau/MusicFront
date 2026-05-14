@@ -110,7 +110,7 @@ export default {
             if (payload.id == "none"){
                 let music = await getMusic(payload.artist, payload.title)
                 console.log("music", music)
-                if (music.id_clip) payload.id = music.data.id_clip
+                if (music.data.id_clip && music.data.id_clip != "Not found") payload.id = music.data.id_clip
                 else payload.id = music.data.id_yt
             }
             if (payload.from == "search" || payload.from == "histo"){
@@ -154,14 +154,18 @@ export default {
                             console.log("reponse de GetSimilarTrack : ", response.data)
                             document.getElementById("youtube-player").style.visibility = "visible"
                             //this.$refs.youtubePlayer.setVideoName(response.data.music["Title"] + " " + response.data.music["Artist"])
-                            this.playlist = [payload.id]
-                            response.data.Result.forEach(track => this.playlist.push(track.id_yt))
+                            if (payload.id_clip && payload.id_clip != "Not found") this.playlist = [payload.id_clip]
+                            else this.playlist = [payload.id]
+
+                            if (response.data.length != 0) {
+                                response.data.Result.forEach(track => this.playlist.push(track.id_yt))
+                            }
                             console.log("Playlist chargée :", this.playlist)
                             this.$refs.youtubePlayer.autoPlayCount = 0
                             this.$refs.youtubePlayer.player.loadPlaylist(this.playlist);
 
                             //payload.done()
-                            this.$refs.sugg.fillDiv(response.data['Result'])
+                            if (response.data['Result'].lenght != 0) this.$refs.sugg.fillDiv(response.data['Result'])
                         }
                     })
                 }
@@ -320,6 +324,10 @@ body {
     height: calc(100vh - 60px);
 }
 
+#routerView{
+    height: calc(100% - 60px);
+}
+
 #btn-reduire{
     position: absolute;
     cursor: pointer;
@@ -368,6 +376,13 @@ body {
     order: -1;
 }
 
+.flexCol{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -382,6 +397,7 @@ body {
   border-radius: 10px;
   background-clip: padding-box;
   border: 2px solid transparent;
+  cursor: pointer;
 }
 
 #btn-agrandir{

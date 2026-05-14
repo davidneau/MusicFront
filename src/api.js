@@ -39,6 +39,11 @@ export function addSongToPlaylist(payload) {
     return API.post('/addSongToPlaylist', payload);
 }
 
+export function deleteSongFromPlaylist(payload){
+    console.log("deleteSongFromPlaylist", payload)
+    return API.post('/deleteSongFromPlaylist', payload);
+}
+
 export function getPlaylist(playlistName) {
     console.log("getPlaylist")
     return API.post('/getPlaylist/' + playlistName);
