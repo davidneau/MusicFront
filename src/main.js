@@ -8,9 +8,14 @@ app.use(router)
 app.mount('#app')
 
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/sw.js")
-    .then(() => console.log("SW enregistré"))
-    .catch(err => console.error("SW error", err));
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js")
+      .then((registration) => {
+        console.log("SW enregistré :", registration);
+      })
+      .catch((error) => {
+        console.log("Erreur SW :", error);
+      });
+  });
 }
-
 export default app
