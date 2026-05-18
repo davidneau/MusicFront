@@ -7,5 +7,6 @@ module.exports = {
     workboxOptions: {
       swSrc: './public/sw.js', // Utilise votre propre fichier comme source
     },
+    globIgnores: ["**/_redirects"]
   },
 };
