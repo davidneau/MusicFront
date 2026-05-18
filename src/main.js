@@ -1,11 +1,9 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import router from './router/index.js'
+import router from './router'
+import './registerServiceWorker'
 
-const app = createApp(App)
-
-app.use(router)
-app.mount('#app')
+createApp(App).use(router).mount('#app')
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -14,5 +12,3 @@ if ('serviceWorker' in navigator) {
       .catch(err => console.error('Erreur Service Worker :', err))
   })
 }
-
-export default app
