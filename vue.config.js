@@ -1,12 +1,21 @@
-const { defineConfig } = require('@vue/cli-service')
-
 module.exports = {
-  transpileDependencies: true,
   pwa: {
-    workboxPluginMode: 'InjectManifest',
+    name: 'MusicDA',
+    themeColor: '#111111',
+    msTileColor: '#111111',
+    appleMobileWebAppCapable: 'yes',
+    appleMobileWebAppStatusBarStyle: 'black',
+
+    workboxPluginMode: 'GenerateSW',
     workboxOptions: {
-      globPatterns: ["**/*.{html,js,css,png,svg}"],
-      globIgnores: ["**/_redirects"] // 👈 ICI
+      skipWaiting: true,
+      clientsClaim: true,
+      cleanupOutdatedCaches: true,
+      exclude: [
+        /_headers$/,
+        /_redirects$/,
+        /\.map$/
+      ]
     }
-  },
-};
+  }
+}
