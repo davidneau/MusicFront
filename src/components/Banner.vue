@@ -29,6 +29,7 @@
                 </button>
             </router-link>
         </div>
+        <button>Menu</button>
         <!-- <button class="neon-btn-deco" @click="logoutBanner">⏻</button> -->
     </div>
 </template>
@@ -91,9 +92,7 @@ export default ({
 
 #searchDiv{
     position: relative;
-    width: 320px;
 }
-
 
 #searchDiv input{
     width: 100%;
@@ -114,21 +113,11 @@ export default ({
 }
 
 #buttonsMenu{
-    flex: 0 0 30%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    margin-right: 10px;
+    display: none;
 }
 
 #divLogo{
-    flex: 0 0 30%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: start;
-    margin-left: 10px;
+    flex: 0 0 10%;
 }
 
 .search-icon {
@@ -204,6 +193,29 @@ export default ({
 @media screen and (min-width: 428px)  {
     .btn-blue-glass {    
         padding: 12px 28px;
+    }
+
+    #searchDiv{
+        position: relative;
+        width: 320px;
+    }
+
+    #divLogo{
+        flex: 0 0 30%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: start;
+        margin-left: 10px;
+    }
+
+    #buttonsMenu{
+        flex: 0 0 30%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        margin-right: 10px;
     }
 }
 
