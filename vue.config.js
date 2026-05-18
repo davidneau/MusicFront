@@ -3,10 +3,10 @@ const { defineConfig } = require('@vue/cli-service')
 module.exports = {
   transpileDependencies: true,
   pwa: {
-    workboxPluginMode: 'InjectManifest',
+    workboxPluginMode: "GenerateSW", // ou "InjectManifest"
     workboxOptions: {
-      swSrc: './public/sw.js', // Utilise votre propre fichier comme source
-    },
-    globIgnores: ["**/_redirects"]
+      globPatterns: ["**/*.{html,js,css,png,svg}"],
+      globIgnores: ["**/_redirects"] // 👈 ICI,
+    }
   },
 };
