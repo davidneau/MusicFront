@@ -69,7 +69,7 @@ export default {
     },
     data: () => ({
         device: "",
-        playlist: [],
+        playlist: Array(),
         enchainement_music: 0,
         showAddPlaylistPopup: false,
         music_id: ""
@@ -160,7 +160,8 @@ export default {
                             if (response.data.length != 0) {
                                 response.data.Result.forEach(track => this.playlist.push(track.id_yt))
                             }
-                            console.log("Playlist chargée :", this.playlist)
+
+                            console.log("Playlist préchargée :", this.playlist)
                             this.$refs.youtubePlayer.autoPlayCount = 0
                             this.$refs.youtubePlayer.player.loadPlaylist(this.playlist);
 

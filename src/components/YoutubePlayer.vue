@@ -61,7 +61,6 @@ export default {
   mounted() {
     window.vueInstance = this;
     this.loadYouTubeAPI();
-    this.loadPlaylist();
   },
 
   beforeUnmount() {
@@ -74,18 +73,6 @@ export default {
   },
 
   methods: {
-    loadPlaylist(){
-        let playlists = JSON.parse(localStorage.getItem("Playlists"))
-        console.log(playlists)
-        console.log(typeof playlists)
-        Object.keys(playlists).forEach((key) => {
-            console.log(key)
-            let option = document.createElement("option")
-            option.value = key
-            option.innerText = key
-            document.getElementById("selectPlaylist").appendChild(option)
-        })
-    },
     addSongToPlaylistYT(){
         const currentIndex = this.player.getPlaylistIndex?.();
         const playlist2 = this.player.getPlaylist?.() || [];
