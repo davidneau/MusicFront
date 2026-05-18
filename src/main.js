@@ -7,15 +7,12 @@ const app = createApp(App)
 app.use(router)
 app.mount('#app')
 
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js")
-      .then((registration) => {
-        console.log("SW enregistré :", registration);
-      })
-      .catch((error) => {
-        console.log("Erreur SW :", error);
-      });
-  });
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(reg => console.log('Service Worker enregistré :', reg))
+      .catch(err => console.error('Erreur Service Worker :', err))
+  })
 }
+
 export default app
