@@ -5,7 +5,7 @@ module.exports = {
   pwa: {
     workboxPluginMode: 'InjectManifest',
     workboxOptions: {
-      swSrc: './src/sw.js', // Utilise votre propre fichier comme source
+      swSrc: './public/sw.js', // Utilise votre propre fichier comme source
     },
   },
 };
