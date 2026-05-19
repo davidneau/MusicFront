@@ -2,16 +2,13 @@ import { createWebHistory, createRouter } from 'vue-router'
 
 
 import HomeView from '../views/Home.vue'
-import LoginView from '../views/Login.vue'
 import SignUp from '../views/SignUp.vue'
 import SignIn from '../views/SignIn.vue'
 import Playlist from '@/views/Playlist.vue'
 
 const routes = [
     { 
-        path: '/', 
-        component: LoginView, 
-        name: 'Login',
+        path: '/',
         redirect: '/home'
     },
     { 
