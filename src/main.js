@@ -12,7 +12,7 @@ if ('serviceWorker' in navigator) {
 
   caches.keys().then((keys) => {
     keys.forEach((k) => caches.delete(k))
-  })
+  }) 
 
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
