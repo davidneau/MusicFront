@@ -8,17 +8,8 @@ module.exports = {
       // 🔥 Force activation immédiate du nouveau SW
       skipWaiting: true,
       clientsClaim: true,
-
-      // 🧠 IMPORTANT : empêche les JS/CSS d'être remplacés par index.html
-      navigateFallback: '/index.html',
-
-      navigateFallbackDenylist: [
-        /\/api\//,
-        /\/js\//,
-        /\/css\//,
-        /\/img\//,
-        /.*\.(js|css|map|png|jpg|jpeg|svg|ico|webp|woff2?)$/
-      ],
+    navigateFallback: '/index.html',
+    navigateFallbackDenylist: [/.*\.(js|css|map|png|jpg|jpeg|svg|ico)$/],
 
       // 🧹 Évite accumulation de vieux caches
       cleanupOutdatedCaches: true,
