@@ -10,7 +10,7 @@ import Playlist from '@/views/Playlist.vue'
 const routes = [
     { 
         path: '/', 
-        component: LoginView, 
+        component: LoginView,
         name: 'Login'
     },
     { 
