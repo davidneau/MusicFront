@@ -6,6 +6,14 @@ import './registerServiceWorker'
 createApp(App).use(router).mount('#app')
 
 if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then((regs) => {
+    regs.forEach((r) => r.unregister())
+  })
+
+  caches.keys().then((keys) => {
+    keys.forEach((k) => caches.delete(k))
+  })
+
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
       .then(reg => console.log('Service Worker enregistré :', reg))
@@ -14,19 +22,5 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('update', () => {
     // 🔥 important : force reload propre
     window.location.reload()
-  })
-}
-
-import { register } from 'register-service-worker'
-
-if (process.env.NODE_ENV === 'production') {
-  register('/sw.js', {
-    updated() {
-      // 🔥 force clean update
-      window.location.reload()
-    },
-    offline() {
-      console.log('offline mode')
-    }
   })
 }
