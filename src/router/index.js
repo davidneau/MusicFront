@@ -11,7 +11,8 @@ const routes = [
     { 
         path: '/', 
         component: LoginView, 
-        name: 'Login'
+        name: 'Login',
+        redirect: '/home'
     },
     { 
         path: '/home', 
