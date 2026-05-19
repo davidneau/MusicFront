@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <Banner :device="device" ref="banner" @logout="logout" @setSearchResult="setSearchResult" @switchUserConnected="switchUserConnected" :userConnected="userConnected"></Banner>
+    <Banner ref="banner" @logout="logout" @setSearchResult="setSearchResult" @switchUserConnected="switchUserConnected" :userConnected="userConnected"></Banner>
     <v-main>
         <router-view @playvideo="playvideo" 
             @descriptionUpdate="descriptionUpdate" 
@@ -297,8 +297,13 @@ export default {
         /* localStorage.setItem('userConnected', false);
         this.$refs.banner.userConnected = false */
         let largeurEcran = window.innerWidth || document.documentElement.clientWidth;
+
+        console.log(largeurEcran)
         if (largeurEcran > 428) this.device = "Desktop"
-        else this.device == "Mobile"
+        else this.device = "Mobile"
+
+        localStorage.setItem('device', this.device)
+
         console.log("device : ", this.device)
         console.log("user connected : ", this.$refs.banner.userConnected)
     }
@@ -369,6 +374,7 @@ body {
     width: 100%;
     height: calc(100% - 60px);
     background-color: black;
+    overflow: hidden;
 }
 
 #player{

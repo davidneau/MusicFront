@@ -53,7 +53,6 @@ export default {
         }
     },
     mounted() {
-        if (this.device == "Mobile") this.tabs.append("Suggestion")
     }
 };
 
@@ -77,8 +76,8 @@ window.onYouTubeIframeAPIReady = function() {
     flex-direction: column;
     align-items: center;
     width: 100%;
-    height: 100%;
-    flex: 0 0 25%;
+    max-height: 50%;
+    flex: 0 0 50%;
 }
 
 .tabs-content{
@@ -148,6 +147,9 @@ window.onYouTubeIframeAPIReady = function() {
         margin-top: 10px;
         height: calc(100% - 10px);
         background-color: rgba(0, 255, 255, 0);
+        flex: 0 0 25%;
+        height: 100%;
+        max-height: 100%;
     }
 }
 

@@ -29,8 +29,29 @@
                 </button>
             </router-link>
         </div>
-        <button>Menu</button>
+        <button @click="showMenu = true" v-show="device == 'Mobile'">Menu</button>
         <!-- <button class="neon-btn-deco" @click="logoutBanner">⏻</button> -->
+    </div>
+        
+    <div id="buttonsMenuMobile" class="flexCol" v-show="device == 'Mobile' && showMenu">
+        <router-link v-if="userConnected === 'true'" style="justify-content: space-around;text-decoration: none;" to="/playlist" @click="showMenu = false">
+            <button class="btn-menu btn-menu-banner" id="btn-profil" style="padding: 8px 16px;">
+                <img src="../../assets/playlist.png" style="height: 40px;">
+                <p style="font-size: 20px; font-weight: bold; margin-left: 10px;">Playlist</p>
+            </button>
+        </router-link>
+        <router-link v-if="userConnected === 'true'" to="/home" style="justify-content: space-around; text-decoration: none;"  @click="showMenu = false">
+            <button class="btn-menu btn-menu-banner" id="btn-menu" style="padding: 8px 16px;">
+                <img src="../../assets/menu.png" style="height: 40px;">
+                <p style="font-size: 20px; font-weight: bold; margin-left: 10px;">Menu</p>
+            </button>
+        </router-link>
+        <router-link v-if="userConnected === 'true'" style="justify-content: space-around;text-decoration: none;" to="/profil"  @click="showMenu = false">
+            <button class="btn-menu btn-menu-banner" id="btn-profil" style="padding: 8px 16px;">
+                <img src="../../assets/profil.png" style="height: 40px;">
+                <p style="font-size: 20px; font-weight: bold; margin-left: 10px;">Profil</p>
+            </button>
+        </router-link>
     </div>
 </template>
 
@@ -40,9 +61,10 @@ import { searchMusic } from '@/api';
 
 export default ({
     name: "MusicPage",
-    props: ["device"],
     data() {
         return {
+            device: 'Desktop',
+            showMenu: false,
             userConnected : localStorage.getItem('userConnected')
         }
     },
@@ -79,6 +101,8 @@ export default ({
         }
     },
     mounted(){
+        this.device = localStorage.getItem('device')
+        console.log("devicee", this.device)
         console.log(localStorage.getItem('userConnected'))
         console.log(typeof localStorage.getItem('userConnected'))
         console.log(this.userConnected)
@@ -118,6 +142,25 @@ export default ({
 
 #divLogo{
     flex: 0 0 10%;
+}
+
+#buttonsMenuMobile{
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background-color: black;
+    width: 50vw;
+    border-radius: 0 0 0 15px;
+    border: 1px solid white;
+}
+
+#buttonsMenuMobile a{
+    margin: 10px;
+    width: 80%;
+}
+
+#buttonsMenuMobile a button{
+    width: 100%;
 }
 
 .search-icon {
