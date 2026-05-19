@@ -20,7 +20,7 @@ if ('serviceWorker' in navigator) {
 import { register } from 'register-service-worker'
 
 if (process.env.NODE_ENV === 'production') {
-  register('/service-worker.js', {
+  register('/sw.js', {
     updated() {
       // 🔥 force clean update
       window.location.reload()
