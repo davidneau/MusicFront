@@ -20,11 +20,6 @@ module.exports = {
         /.*\.(js|css|map|png|jpg|jpeg|svg|ico|webp|woff2?)$/
       ],
 
-      // 📦 Cache uniquement ce qui est safe (assets buildés)
-      globPatterns: [
-        '**/*.{js,css,html,ico,png,svg,jpg,jpeg,gif,woff2}'
-      ],
-
       // 🧹 Évite accumulation de vieux caches
       cleanupOutdatedCaches: true,
 
