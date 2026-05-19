@@ -1,6 +1,6 @@
 module.exports = {
+  publicPath: '/',
   pwa: {
-    publicPath: '/',
     name: 'MusicDA',
     themeColor: '#111111',
     msTileColor: '#111111',
