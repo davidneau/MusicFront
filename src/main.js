@@ -7,8 +7,12 @@ createApp(App).use(router).mount('#app')
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.unregister('/sw.js')
+    navigator.serviceWorker.register('/sw.js')
       .then(reg => console.log('Service Worker enregistré :', reg))
       .catch(err => console.error('Erreur Service Worker :', err))
+  });
+  window.addEventListener('update', () => {
+    // 🔥 important : force reload propre
+    window.location.reload()
   })
 }
