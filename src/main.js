@@ -24,26 +24,3 @@ if ('serviceWorker' in navigator) {
     window.location.reload()
   })
 }
-
-if ('mediaSession' in navigator) {
-  navigator.mediaSession.metadata = new MediaMetadata({
-    title: 'Ma Musique',
-    artist: 'Mon Site',
-    album: 'Playlist',
-    artwork: [
-      {
-        src: '/cover.jpg',
-        sizes: '512x512',
-        type: 'image/jpeg'
-      }
-    ]
-  });
-
-  navigator.mediaSession.setActionHandler('play', () => {
-    player.play();
-  });
-
-  navigator.mediaSession.setActionHandler('pause', () => {
-    player.pause();
-  });
-}

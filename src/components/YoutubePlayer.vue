@@ -54,13 +54,35 @@ export default {
         autoPlayCount: 0,
         lastPlaylistIndex: -1,
         lastVideoId: null,
-        showAddPlaylistPopup: false
+        showAddPlaylistPopup: false,
+        isPlaying: false,
+        wasPlayingWhenHidden: false,
     };
   },
 
+  beforeUnmount() {
+    clearTimeout(this.watchdogTimer);
+    clearTimeout(this.endTimer);
+    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+
+    if (this.silentAudio) {
+        this.silentAudio.pause();
+        this.silentAudio = null;
+    }
+    if (this.player && this.player.destroy) {
+        this.player.destroy();
+    }
+  },
   mounted() {
     window.vueInstance = this;
     this.loadYouTubeAPI();
+
+    // Tente de reprendre la lecture si YouTube pause au passage en arrière-plan
+    document.addEventListener('visibilitychange', this.handleVisibilityChange);
+
+    // Lance l'audio silencieux au premier clic utilisateur
+    // (obligatoire sur mobile, autoplay bloqué sinon)
+    document.addEventListener('click', this.initSilentAudio, { once: true });
   },
 
   beforeUnmount() {
@@ -73,6 +95,58 @@ export default {
   },
 
   methods: {
+    // Lance un audio quasi-silencieux en boucle pour maintenir le focus audio
+    // Chrome mobile suspend les pages sans audio actif
+    initSilentAudio() {
+        if (this.silentAudio) return;
+        this.silentAudio = new Audio();
+        // WAV de silence minimal encodé en base64 (44 octets, 1 sample)
+        this.silentAudio.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA';
+        this.silentAudio.loop = true;
+        this.silentAudio.volume = 0.001;
+        this.silentAudio.play().catch(() => {});
+    },
+
+    handleVisibilityChange() {
+        if (document.hidden) {
+            // Page cachée : YouTube va mettre en pause, on mémorise l'état
+            this.wasPlayingWhenHidden = this.isPlaying;
+        } else {
+            // Page visible à nouveau : on reprend si on était en lecture
+            if (this.wasPlayingWhenHidden) {
+            this.wasPlayingWhenHidden = false;
+            setTimeout(() => {
+                this.player?.playVideo();
+            }, 300);
+            }
+        }
+    },
+
+    setupMediaSession(title, artist) {
+        if (!('mediaSession' in navigator)) return;
+
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: title || 'Musique',
+            artist: artist || '',
+        });
+
+        navigator.mediaSession.setActionHandler('play', () => {
+            this.player?.playVideo();
+        });
+        navigator.mediaSession.setActionHandler('pause', () => {
+            this.player?.pauseVideo();
+        });
+        navigator.mediaSession.setActionHandler('nexttrack', () => {
+            this.next();
+        });
+        navigator.mediaSession.setActionHandler('previoustrack', () => {
+            this.previous();
+        });
+    },
+    updateMediaSessionState(playing) {
+        if (!('mediaSession' in navigator)) return;
+        navigator.mediaSession.playbackState = playing ? 'playing' : 'paused';
+    },
     addSongToPlaylistYT(){
         const currentIndex = this.player.getPlaylistIndex?.();
         const playlist2 = this.player.getPlaylist?.() || [];
@@ -207,6 +281,9 @@ export default {
     async onPlayerStateChange(event) {
         switch (event.data) {
             case window.YT.PlayerState.PLAYING: {
+                this.isPlaying = true;                  // ← ajouter
+                this.updateMediaSessionState(true);  
+
                 const currentIndex = this.player.getPlaylistIndex?.();
                 const playlist = this.player.getPlaylist?.() || [];
                 const currentVideoId = playlist[currentIndex] || this.player.getVideoData?.().video_id;
@@ -254,6 +331,19 @@ export default {
                 break;
             }
 
+            case window.YT.PlayerState.PAUSED: {
+                this.isPlaying = false;                 // ← ajouter
+                this.updateMediaSessionState(false);    // ← ajouter
+
+                // Si YouTube a mis en pause parce qu'on est en arrière-plan → on relance
+                if (document.hidden && this.wasPlayingWhenHidden) {
+                    setTimeout(() => {
+                    this.player?.playVideo();
+                    }, 500);
+                }
+                break;
+            }
+            
             case window.YT.PlayerState.BUFFERING:
                 console.log("Buffering...");
                 break;
@@ -287,6 +377,10 @@ export default {
     },
 
     playNewVideo(videoId, videoName = "", from, title = "", artist = "") {
+      // CAS 2
+      this.$emit('descriptionUpdate', { title, artist });
+      this.setupMediaSession(title, artist);   // ← ajouter
+
       if (!this.player) {
         console.error("Le lecteur YouTube n'est pas encore prêt.");
         return;
@@ -327,6 +421,7 @@ export default {
             //this.startWatchdog(ytId);
 
             this.$emit('descriptionUpdate', { title, artist });
+            this.setupMediaSession(title, artist);   // ← ajouter
           })
           .catch((err) => {
             console.error("Erreur getSimilarTrack :", err);
