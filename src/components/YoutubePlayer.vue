@@ -73,6 +73,7 @@ export default {
         this.player.destroy();
     }
   },
+  
   mounted() {
     window.vueInstance = this;
     this.loadYouTubeAPI();
@@ -83,15 +84,6 @@ export default {
     // Lance l'audio silencieux au premier clic utilisateur
     // (obligatoire sur mobile, autoplay bloqué sinon)
     document.addEventListener('click', this.initSilentAudio, { once: true });
-  },
-
-  beforeUnmount() {
-    clearTimeout(this.watchdogTimer);
-    clearTimeout(this.endTimer);
-
-    if (this.player && this.player.destroy) {
-      this.player.destroy();
-    }
   },
 
   methods: {
