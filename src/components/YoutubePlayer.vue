@@ -59,20 +59,6 @@ export default {
         wasPlayingWhenHidden: false,
     };
   },
-
-  beforeUnmount() {
-    clearTimeout(this.watchdogTimer);
-    clearTimeout(this.endTimer);
-    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
-
-    if (this.silentAudio) {
-        this.silentAudio.pause();
-        this.silentAudio = null;
-    }
-    if (this.player && this.player.destroy) {
-        this.player.destroy();
-    }
-  },
   
   mounted() {
     window.vueInstance = this;
@@ -84,6 +70,15 @@ export default {
     // Lance l'audio silencieux au premier clic utilisateur
     // (obligatoire sur mobile, autoplay bloqué sinon)
     document.addEventListener('click', this.initSilentAudio, { once: true });
+  },
+
+  beforeUnmount() {
+    clearTimeout(this.watchdogTimer);
+    clearTimeout(this.endTimer);
+
+    if (this.player && this.player.destroy) {
+      this.player.destroy();
+    }
   },
 
   methods: {
