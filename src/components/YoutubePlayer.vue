@@ -57,6 +57,7 @@ export default {
         showAddPlaylistPopup: false,
         isPlaying: false,
         wasPlayingWhenHidden: false,
+        backgroundResumeCount: 0,
     };
   },
   
@@ -97,14 +98,10 @@ export default {
     handleVisibilityChange() {
         if (document.hidden) {
             this.wasPlayingWhenHidden = this.isPlaying;
-            // Tente de gagner la course contre le pause interne de YouTube (une seule fois)
-            if (this.isPlaying) {
-            setTimeout(() => this.player?.playVideo(), 200);
-            }
         } else {
-            // Retour sur le site → reprendre si on était en lecture
             if (this.wasPlayingWhenHidden) {
             this.wasPlayingWhenHidden = false;
+            this.backgroundResumeCount = 0; // ← reset
             setTimeout(() => this.player?.playVideo(), 300);
             }
         }
@@ -269,8 +266,9 @@ export default {
     async onPlayerStateChange(event) {
         switch (event.data) {
             case window.YT.PlayerState.PLAYING: {
-                this.isPlaying = true;                  // ← ajouter
-                this.updateMediaSessionState(true);  
+                this.isPlaying = true;
+                this.backgroundResumeCount = 0; // ← reset quand la lecture reprend vraiment
+                this.updateMediaSessionState(true);
 
                 const currentIndex = this.player.getPlaylistIndex?.();
                 const playlist = this.player.getPlaylist?.() || [];
@@ -320,9 +318,14 @@ export default {
             }
 
             case window.YT.PlayerState.PAUSED: {
-                this.isPlaying = false;                 // ← ajouter
-                this.updateMediaSessionState(false);    // ← ajouter
+                this.isPlaying = false;
+                this.updateMediaSessionState(false);
 
+                // Tente de reprendre en arrière-plan, max 3 fois
+                if (document.hidden && this.wasPlayingWhenHidden && this.backgroundResumeCount < 3) {
+                    this.backgroundResumeCount++;
+                    setTimeout(() => this.player?.playVideo(), 600);
+                }
                 break;
             }
             
