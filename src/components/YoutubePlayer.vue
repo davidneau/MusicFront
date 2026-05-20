@@ -96,15 +96,16 @@ export default {
 
     handleVisibilityChange() {
         if (document.hidden) {
-            // Page cachée : YouTube va mettre en pause, on mémorise l'état
             this.wasPlayingWhenHidden = this.isPlaying;
+            // Tente de gagner la course contre le pause interne de YouTube (une seule fois)
+            if (this.isPlaying) {
+            setTimeout(() => this.player?.playVideo(), 200);
+            }
         } else {
-            // Page visible à nouveau : on reprend si on était en lecture
+            // Retour sur le site → reprendre si on était en lecture
             if (this.wasPlayingWhenHidden) {
             this.wasPlayingWhenHidden = false;
-            setTimeout(() => {
-                this.player?.playVideo();
-            }, 300);
+            setTimeout(() => this.player?.playVideo(), 300);
             }
         }
     },
@@ -322,12 +323,6 @@ export default {
                 this.isPlaying = false;                 // ← ajouter
                 this.updateMediaSessionState(false);    // ← ajouter
 
-                // Si YouTube a mis en pause parce qu'on est en arrière-plan → on relance
-                if (document.hidden && this.wasPlayingWhenHidden) {
-                    setTimeout(() => {
-                    this.player?.playVideo();
-                    }, 500);
-                }
                 break;
             }
             
