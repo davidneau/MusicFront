@@ -340,6 +340,7 @@ body {
     z-index: 3;
     top: 0;
     right: 0;
+    z-index: 50;
 }
 
 #bannerSearch {

@@ -1,7 +1,7 @@
 <template>
     <div id="mainSuggestion" style="height: 100%; position: relative;">
-        <button id="buttonUp" @click="translateUp">Up</button>
-        <div style="overflow: auto;">
+        <button id="buttonUp" @click="translateUp()">Up</button>
+        <div style="overflow: auto; height: 100%;">
             <!-- Onglets -->
             <div class="tabs-header">
                 <button
@@ -69,10 +69,12 @@ export default ({
             return new Promise(resolve => setTimeout(resolve, ms));
         },
         translateUp(){
-            console.log("up")
-            if (document.getElementById("mainSuggestion").className == '' || document.getElementById("mainSuggestion").className == 'down') document.getElementById("mainSuggestion").className = 'up'
-            else document.getElementById("mainSuggestion").className = 'down'
-            console.log(document.getElementById("mainSuggestion").className)
+            if (this.device == "Mobile"){
+                console.log("up")
+                if (document.getElementById("mainSuggestion").className == '' || document.getElementById("mainSuggestion").className == 'down') document.getElementById("mainSuggestion").className = 'up'
+                else document.getElementById("mainSuggestion").className = 'down'
+                console.log(document.getElementById("mainSuggestion").className)
+            }
         },
         async fillDiv(list){
             this.listMusics = []
@@ -104,6 +106,13 @@ export default ({
 </script>
 
 <style>
+    .tabs-header{
+        height: 8%;    
+        position: sticky;
+        top: 0;
+        background-color: black;
+    }
+
     #mainSuggestion{
         flex: 0 0 50%;
         height: calc(100vh - 60);
@@ -138,10 +147,13 @@ export default ({
 
     @media screen and (min-width: 428px)  {
         #mainSuggestion{
-            margin-top: 10px;
             background-color: rgba(0, 255, 255,0);
             flex: 0 0 25%;
             max-height: 100%;
+        }
+
+        .tabs-header{
+            height: 4%;    
         }
     }
 

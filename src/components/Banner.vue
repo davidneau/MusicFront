@@ -152,6 +152,7 @@ export default ({
     width: 50vw;
     border-radius: 0 0 0 15px;
     border: 1px solid white;
+    z-index: 100000;
 }
 
 #buttonsMenuMobile a{
