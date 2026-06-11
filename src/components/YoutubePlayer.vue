@@ -314,7 +314,6 @@ export default {
             }
 
             case window.YT.PlayerState.PAUSED: {
-                this.isPlaying = false;
                 break;
             }
             
