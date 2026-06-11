@@ -3,6 +3,7 @@ import { createWebHistory, createRouter } from 'vue-router'
 
 import HomeView from '../views/Home.vue'
 import LoginView from '../views/Login.vue'
+import Profil from '@/views/Profil.vue'
 import SignUp from '../views/SignUp.vue'
 import SignIn from '../views/SignIn.vue'
 import Playlist from '@/views/Playlist.vue'
@@ -23,6 +24,12 @@ const routes = [
         path: '/playlist', 
         component: Playlist, 
         name: 'Playlist',
+        props: { userConnected: true }
+    },
+    { 
+        path: '/profil', 
+        component: Profil, 
+        name: 'Profil',
         props: { userConnected: true }
     },
     { 

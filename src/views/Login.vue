@@ -36,6 +36,7 @@ export default ({
             .then(profile => {
                 this.$emit('switchUserConnected')
                 console.log(profile.data); // Affiche les infos de l'utilisateur
+                localStorage.setItem("userName", profile.data.user)
                 this.$router.push('home')
             })
             .catch(err => {
@@ -51,7 +52,8 @@ export default ({
         }
     },
     mounted(){
-        if (localStorage.getItem('userConnected')) {
+        console.log("uc", localStorage.getItem('userConnected'))
+        if (localStorage.getItem('userConnected') == 'true') {
             this.$router.push('home')
         }
     }

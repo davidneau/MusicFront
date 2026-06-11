@@ -30,7 +30,6 @@
             </router-link>
         </div>
         <button @click="showMenu = true" v-show="device == 'Mobile'">Menu</button>
-        <button class="neon-btn-deco" @click="logoutBanner">⏻</button>
     </div>
         
     <div id="buttonsMenuMobile" class="flexCol" v-show="device == 'Mobile' && showMenu">
@@ -72,14 +71,6 @@ export default ({
         connectedUserBanner() {
             this.userConnected = true
             console.log("switch", this.userConnected)
-        },
-        disconnectedUserBanner() {
-            this.userConnected = false
-            console.log("switch", this.userConnected)
-        },
-        logoutBanner(){
-            this.disconnectedUserBanner()
-            this.$emit('logout')
         },
         async searching() {
             let searchstr = document.getElementById('search').value
