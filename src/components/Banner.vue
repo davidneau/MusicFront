@@ -30,7 +30,7 @@
             </router-link>
         </div>
         <button @click="showMenu = true" v-show="device == 'Mobile'">Menu</button>
-        <!-- <button class="neon-btn-deco" @click="logoutBanner">⏻</button> -->
+        <button class="neon-btn-deco" @click="logoutBanner">⏻</button>
     </div>
         
     <div id="buttonsMenuMobile" class="flexCol" v-show="device == 'Mobile' && showMenu">

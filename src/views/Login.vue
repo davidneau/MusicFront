@@ -49,6 +49,11 @@ export default ({
         signUp(){
             this.$router.push('signUp')
         }
+    },
+    mounted(){
+        if (localStorage.getItem('userConnected')) {
+            this.$router.push('home')
+        }
     }
 })
 </script>

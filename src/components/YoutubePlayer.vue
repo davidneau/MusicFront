@@ -128,10 +128,7 @@ export default {
             this.previous();
         });
     },
-    updateMediaSessionState(playing) {
-        if (!('mediaSession' in navigator)) return;
-        navigator.mediaSession.playbackState = playing ? 'playing' : 'paused';
-    },
+
     addSongToPlaylistYT(){
         const currentIndex = this.player.getPlaylistIndex?.();
         const playlist2 = this.player.getPlaylist?.() || [];
@@ -268,7 +265,6 @@ export default {
             case window.YT.PlayerState.PLAYING: {
                 this.isPlaying = true;
                 this.backgroundResumeCount = 0; // ← reset quand la lecture reprend vraiment
-                this.updateMediaSessionState(true);
 
                 const currentIndex = this.player.getPlaylistIndex?.();
                 const playlist = this.player.getPlaylist?.() || [];
@@ -319,13 +315,6 @@ export default {
 
             case window.YT.PlayerState.PAUSED: {
                 this.isPlaying = false;
-                this.updateMediaSessionState(false);
-
-                // Tente de reprendre en arrière-plan, max 3 fois
-                if (document.hidden && this.wasPlayingWhenHidden && this.backgroundResumeCount < 3) {
-                    this.backgroundResumeCount++;
-                    setTimeout(() => this.player?.playVideo(), 600);
-                }
                 break;
             }
             
@@ -336,14 +325,6 @@ export default {
             case window.YT.PlayerState.CUED:
                 console.log("Vidéo prête");
                 break;
-
-            /* case window.YT.PlayerState.ENDED:
-                console.log("Vidéo terminée → prochaine dans 2 secondes");
-
-                if (!this.playlistLoaded) this.skipToNext();
-
-                this.playlistLoaded = true
-                break; */
         }
     },
 
@@ -403,8 +384,6 @@ export default {
               startSeconds: 0
             });
 
-            //this.startWatchdog(ytId);
-
             this.$emit('descriptionUpdate', { title, artist });
             this.setupMediaSession(title, artist);   // ← ajouter
           })
@@ -423,8 +402,6 @@ export default {
         videoId: videoId,
         startSeconds: 0
       });
-
-      //this.startWatchdog(videoId);
 
       this.$emit('descriptionUpdate', { title, artist });
     }
