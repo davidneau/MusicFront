@@ -1,8 +1,9 @@
 <template>
   <v-app>
-    <Banner ref="banner" @logout="logout" @setSearchResult="setSearchResult" @switchUserConnected="switchUserConnected" :userConnected="userConnected"></Banner>
+    <Banner ref="banner" @setSearchResult="setSearchResult" @switchUserConnected="switchUserConnected" :userConnected="userConnected"></Banner>
     <v-main>
         <router-view @playvideo="playvideo" 
+            @logout="logout"
             @descriptionUpdate="descriptionUpdate" 
             @changeplaylist="changeplaylist"
             @switchUserConnected="switchUserConnected"
