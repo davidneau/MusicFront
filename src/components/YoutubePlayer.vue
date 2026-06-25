@@ -33,7 +33,7 @@
 import { getSimilarTrack, getMusicFromVideoID, addSongToPlaylist } from '@/api';
 
 export default {
-  name: "YoutubePlayer",
+  name: "YoutubePlayer", 
   props: ["device"],
   data() {
     return {
