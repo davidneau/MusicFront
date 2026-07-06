@@ -26,6 +26,7 @@
                 <button @click="resumeAfterHumanClick">OK</button>
             </div>
         </div>
+        <audio id="player" controls></audio>
     </div>
 </template>
 
@@ -64,6 +65,22 @@ export default {
   mounted() {
     window.vueInstance = this;
     this.loadYouTubeAPI();
+  },
+
+  unmounted(){
+    const audio = document.getElementById("player");
+
+    audio.src = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+
+    async function playMusic() {
+        try {
+            await audio.play();
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    playMusic()
   },
 
   methods: {
