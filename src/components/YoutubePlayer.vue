@@ -322,7 +322,6 @@ export default {
             });
 
             this.$emit('descriptionUpdate', { title, artist });
-            this.setupMediaSession(title, artist);   // ← ajouter
           })
           .catch((err) => {
             console.error("Erreur getSimilarTrack :", err);
