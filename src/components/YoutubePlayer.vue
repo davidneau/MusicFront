@@ -70,22 +70,19 @@ export default {
     this.audio.src='https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
     this.audio.lopp = true
 
-    document.addEventListener("visibilitychange", () => {
-        console.log(document.visibilityState);
-        navigator.mediaSession.metadata = new MediaMetadata({
-            title: "Titre",
-            artist: "Artiste",
-            artwork: [
-                {
-                    src: "/cover.png",
-                    sizes: "512x512",
-                    type: "image/png"
-                }
-            ]
-        });
+    document.addEventListener("visibilitychange", async () => {
+        if (document.visibilityState === "hidden") {
 
-        navigator.mediaSession.setActionHandler("play", () => this.audio.play());
-        navigator.mediaSession.setActionHandler("pause", () => this.audio.pause());
+            // Arrêter YouTube
+            this.player.pauseVideo();
+
+            // Continuer avec l'audio natif
+            try {
+                await this.audio.play();
+            } catch (e) {
+                console.error(e);
+            }
+        }
     });
   },
 
