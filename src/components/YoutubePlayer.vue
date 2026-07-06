@@ -64,13 +64,6 @@ export default {
   mounted() {
     window.vueInstance = this;
     this.loadYouTubeAPI();
-
-    // Tente de reprendre la lecture si YouTube pause au passage en arrière-plan
-    document.addEventListener('visibilitychange', this.handleVisibilityChange);
-
-    // Lance l'audio silencieux au premier clic utilisateur
-    // (obligatoire sur mobile, autoplay bloqué sinon)
-    document.addEventListener('click', this.initSilentAudio, { once: true });
   },
 
   beforeUnmount() {

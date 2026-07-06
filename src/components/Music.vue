@@ -1,6 +1,6 @@
 <template>
     <div class="musicDiv btn-menu">
-        <div @click="handleClick" class="flexRow">
+        <div @click="handleClick" class="flexRow mainDivMusic">
             <img v-if="img == 'https://upload.wikimedia.org/wikipedia/commons/9/97/Music_-_The_Noun_Project.svg'" style='filter: invert(1);' :src=img height="60px" width="60px">
             <img v-else :src=img height="60px" width="60px" referrerpolicy="no-referrer">
             <div class="textMusicDiv">
@@ -9,7 +9,7 @@
                 <h3>{{ album }}</h3>
             </div>
         </div>
-        <button v-if="btnATP" @click="open_amtp_popup_fct">Add to playlist</button>
+        <button v-if="btnATP" style="width: 20%;" @click="open_amtp_popup_fct">Add to playlist</button>
     </div>
 </template>
 
@@ -50,26 +50,64 @@ export default ({
 </script>
 
 <style>
-    .flexRow{
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-    }
+.textMusicDiv{
+    max-width: calc(100% - 60px);
+}
 
-    .musicDiv{
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        margin: 10px;
-    }
-    
-    .musicDiv img{
-        margin-right: 10px;
-    }
+.textMusicDiv>h2{
+    overflow: hidden;
+    white-space: nowrap;
+    transition: transform 0.5s linear;
+}
 
-    .musicDiv h2,h3{
-        margin: 0px;
-    }
+.textMusicDiv>h3{
+    overflow: hidden;
+    white-space: nowrap;
+    transition: transform 0.5s linear;
+}
+
+/* .textMusicDiv:hover h2 {
+    animation: scroll-text 5s linear forwards;
+}
+
+.textMusicDiv:hover h3 {
+    animation: scroll-text 5s linear forwards;
+} */
+
+.mainDivMusic{
+    width: 80%;
+    justify-content: flex-start !important;
+}
+
+.flexRow{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.musicDiv{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px;
+}
+
+.musicDiv img{
+    margin-right: 10px;
+}
+
+.musicDiv h2,h3{
+    margin: 0px;
+}
+
+@keyframes scroll-text {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
 </style>

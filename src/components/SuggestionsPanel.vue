@@ -24,7 +24,8 @@
                         <Music :title="music.Title" 
                             :artist="music.Artist" 
                             :img="music.Image" 
-                            videoId="none" 
+                            videoId="none"
+                            btnATP="true" 
                             from="search">
                         </Music>
                     </div>

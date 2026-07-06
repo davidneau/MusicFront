@@ -250,24 +250,8 @@ export default ({
     overflow: hidden;
 }
 
-.textMusicDiv>h2{
-    overflow: hidden;
-    white-space: nowrap;
-    transition: transform 0.5s linear;
-}
 
-.textMusicDiv:hover h2 {
-    animation: scroll-text 5s linear forwards;
-}
 
-@keyframes scroll-text {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-100%);
-  }
-}
 
 #playlists2{
     margin-top: 50px;
