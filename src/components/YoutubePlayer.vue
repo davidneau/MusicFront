@@ -59,28 +59,33 @@ export default {
         isPlaying: false,
         wasPlayingWhenHidden: false,
         backgroundResumeCount: 0,
+        audio: new Audio()
     };
   },
   
   mounted() {
     window.vueInstance = this;
     this.loadYouTubeAPI();
+
+    this.audio.src='https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
+    this.audio.lopp = true
   },
 
   unmounted(){
-    const audio = document.getElementById("player");
+    navigator.mediaSession.metadata = new MediaMetadata({
+        title: "Titre",
+        artist: "Artiste",
+        artwork: [
+            {
+                src: "/cover.png",
+                sizes: "512x512",
+                type: "image/png"
+            }
+        ]
+    });
 
-    audio.src = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
-
-    async function playMusic() {
-        try {
-            await audio.play();
-        } catch (e) {
-            console.error(e);
-        }
-    }
-
-    playMusic()
+    navigator.mediaSession.setActionHandler("play", () => this.audio.play());
+    navigator.mediaSession.setActionHandler("pause", () => this.audio.pause());
   },
 
   methods: {
