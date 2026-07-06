@@ -66,28 +66,7 @@ export default {
     this.loadYouTubeAPI();
   },
 
-  beforeUnmount() {
-    clearTimeout(this.watchdogTimer);
-    clearTimeout(this.endTimer);
-
-    if (this.player && this.player.destroy) {
-      this.player.destroy();
-    }
-  },
-
   methods: {
-    // Lance un audio quasi-silencieux en boucle pour maintenir le focus audio
-    // Chrome mobile suspend les pages sans audio actif
-    initSilentAudio() {
-        if (this.silentAudio) return;
-        this.silentAudio = new Audio();
-        // WAV de silence minimal encodé en base64 (44 octets, 1 sample)
-        this.silentAudio.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA';
-        this.silentAudio.loop = true;
-        this.silentAudio.volume = 0.001;
-        this.silentAudio.play().catch(() => {});
-    },
-
     handleVisibilityChange() {
         if (document.hidden) {
             this.wasPlayingWhenHidden = this.isPlaying;
@@ -184,17 +163,6 @@ export default {
           onError: this.onPlayerError
         }
       });
-    },
-
-    startWatchdog(videoId) {
-      clearTimeout(this.watchdogTimer);
-
-      this.watchdogTimer = setTimeout(() => {
-        if (!this.hasStarted) {
-          console.warn("⚠️ Vidéo bloquée (probable 403) :", videoId);
-          this.skipToNext();
-        }
-      }, this.watchdogDelay);
     },
 
     onPlayerError(event) {
