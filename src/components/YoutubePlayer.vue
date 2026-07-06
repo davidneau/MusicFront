@@ -74,7 +74,7 @@ export default {
         if (document.visibilityState === "hidden") {
 
             // Arrêter YouTube
-            this.player.pauseVideo();
+            this.player.destroy();
 
             // Continuer avec l'audio natif
             try {
