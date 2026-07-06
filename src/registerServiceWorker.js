@@ -29,10 +29,4 @@ if (process.env.NODE_ENV === 'production') {
       console.error('❌ SW registration error:', error)
     }
   })
-
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (refreshing) return
-    refreshing = true
-    window.location.reload()
-  })
 }

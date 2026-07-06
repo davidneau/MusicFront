@@ -100,28 +100,6 @@ export default {
         }
     },
 
-    setupMediaSession(title, artist) {
-        if (!('mediaSession' in navigator)) return;
-
-        navigator.mediaSession.metadata = new MediaMetadata({
-            title: title || 'Musique',
-            artist: artist || '',
-        });
-
-        navigator.mediaSession.setActionHandler('play', () => {
-            this.player?.playVideo();
-        });
-        navigator.mediaSession.setActionHandler('pause', () => {
-            this.player?.pauseVideo();
-        });
-        navigator.mediaSession.setActionHandler('nexttrack', () => {
-            this.next();
-        });
-        navigator.mediaSession.setActionHandler('previoustrack', () => {
-            this.previous();
-        });
-    },
-
     addSongToPlaylistYT(){
         const currentIndex = this.player.getPlaylistIndex?.();
         const playlist2 = this.player.getPlaylist?.() || [];
@@ -337,7 +315,6 @@ export default {
     playNewVideo(videoId, videoName = "", from, title = "", artist = "") {
       // CAS 2
       this.$emit('descriptionUpdate', { title, artist });
-      this.setupMediaSession(title, artist);   // ← ajouter
 
       if (!this.player) {
         console.error("Le lecteur YouTube n'est pas encore prêt.");
