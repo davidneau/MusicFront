@@ -1,7 +1,5 @@
 import { register } from 'register-service-worker'
 
-let refreshing = false
-
 if (process.env.NODE_ENV === 'production') {
   register(`${process.env.BASE_URL}sw.js`, {
     ready() {
