@@ -67,7 +67,7 @@ export default {
     window.vueInstance = this;
     this.loadYouTubeAPI();
 
-    this.audio.src='https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
+    /*this.audio.src='https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
     this.audio.lopp = true
 
     document.addEventListener("visibilitychange", async () => {
@@ -84,7 +84,7 @@ export default {
                 console.error(e);
             }
         }
-    });
+    });*/
   },
 
   unmounted(){
