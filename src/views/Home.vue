@@ -24,7 +24,7 @@
                     :title="music['Title']" 
                     :artist="music['Artist']"
                     :album="music?.StatMusic3?.Album"
-                    :img="music['StatMusic3']['Image']"
+                    :img="music?.StatMusic3?.Image"
                     :videoId="music['id_yt']"
                     :id_clip="music['StatMusic3']['id_clip']"
                     :btnATP=true
