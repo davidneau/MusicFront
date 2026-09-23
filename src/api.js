@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: "https://musicda.cloud/api2/",
+  baseURL: "https://musicda.cloud/api2/music/",
 });
 
 export function login(identifiant, password) {
