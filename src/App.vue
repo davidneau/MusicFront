@@ -39,7 +39,8 @@ import YoutubePlayer from './components/YoutubePlayer.vue';
 import Description from './components/Description.vue';
 import Banner from './components/Banner.vue';
 import SuggestionsPanel from './components/SuggestionsPanel.vue'
-import { searchMusic, getMusic, ON_ITEM_CLICK, OPEN_AMTP_POPUP, getSimilarTrack } from './api';
+import { searchMusic, getMusic, ON_ITEM_CLICK, OPEN_AMTP_POPUP } from './api';
+import { getSimilarTrack } from './api';
 import { provide, getCurrentInstance  } from 'vue'
 import AddMusicToPlaylistPopup from '@/components/AddMusicToPlaylistPopup.vue';
 
@@ -369,7 +370,6 @@ body {
 }
 
 #divPlayer{
-    display: none;
     flex-direction: column;
     position: absolute;
     top: 60px;

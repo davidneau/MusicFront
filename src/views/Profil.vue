@@ -25,6 +25,7 @@ export default ({
     methods: {
         logoutBanner(){
             this.disconnectedUserBanner()
+            this.$emit('switchUserConnected')
             this.$emit('logout')
             localStorage.setItem("userConnected", false)
         },
@@ -42,7 +43,6 @@ export default ({
 <style>
 
 #profilMain {
-    margin-top: 20px;
     display: flex;
     flex-direction: column;
     justify-content: space-around;

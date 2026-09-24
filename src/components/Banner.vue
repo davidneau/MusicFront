@@ -3,26 +3,26 @@
         <div id="divLogo" style="height: 100%;">
             <img src="../../assets/logo.png" style="height: 100%;">
         </div>
-        <div id="searchDiv" v-if="userConnected === 'true'">
+        <div id="searchDiv" v-if="userStore.userConnected">
             <input type="text" id="search" @keyup.enter="searching()" ref="searchInput" value="" placeholder="Rechercher un titre, un artiste…">
             <svg @click="searching()" class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black">
                 <path d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z"/>
             </svg>
         </div>
         <div id="buttonsMenu">
-            <router-link v-if="userConnected === 'true'" style="justify-content: space-around;text-decoration: none;" to="/playlist">
+            <router-link v-if="userStore.userConnected" style="justify-content: space-around;text-decoration: none;" to="/playlist">
                 <button class="btn-menu btn-menu-banner" id="btn-profil" style="padding: 8px 16px;">
                     <img src="../../assets/playlist.png" style="height: 40px;">
                     <p v-if="device=='Desktop'" style="font-size: 20px; font-weight: bold; margin-left: 10px;">Playlist</p>
                 </button>
             </router-link>
-            <router-link v-if="userConnected === 'true'" to="/home" style="justify-content: space-around; text-decoration: none;">
+            <router-link v-if="userStore.userConnected" to="/home" style="justify-content: space-around; text-decoration: none;">
                 <button class="btn-menu btn-menu-banner" id="btn-menu" style="padding: 8px 16px;">
                     <img src="../../assets/menu.png" style="height: 40px;">
                     <p v-if="device=='Desktop'" style="font-size: 20px; font-weight: bold; margin-left: 10px;">Menu</p>
                 </button>
             </router-link>
-            <router-link v-if="userConnected === 'true'" style="justify-content: space-around;text-decoration: none;" to="/profil">
+            <router-link v-if="userStore.userConnected" style="justify-content: space-around;text-decoration: none;" to="/profil">
                 <button class="btn-menu btn-menu-banner" id="btn-profil" style="padding: 8px 16px;">
                     <img src="../../assets/profil.png" style="height: 40px;">
                     <p v-if="device=='Desktop'" style="font-size: 20px; font-weight: bold; margin-left: 10px;">Profil</p>
@@ -33,19 +33,19 @@
     </div>
         
     <div id="buttonsMenuMobile" class="flexCol" v-show="device == 'Mobile' && showMenu">
-        <router-link v-if="userConnected === 'true'" style="justify-content: space-around;text-decoration: none;" to="/playlist" @click="showMenu = false">
+        <router-link v-if="userStore.userConnected" style="justify-content: space-around;text-decoration: none;" to="/playlist" @click="showMenu = false">
             <button class="btn-menu btn-menu-banner" id="btn-profil" style="padding: 8px 16px;">
                 <img src="../../assets/playlist.png" style="height: 40px;">
                 <p style="font-size: 20px; font-weight: bold; margin-left: 10px;">Playlist</p>
             </button>
         </router-link>
-        <router-link v-if="userConnected === 'true'" to="/home" style="justify-content: space-around; text-decoration: none;"  @click="showMenu = false">
+        <router-link v-if="userStore.userConnected" to="/home" style="justify-content: space-around; text-decoration: none;"  @click="showMenu = false">
             <button class="btn-menu btn-menu-banner" id="btn-menu" style="padding: 8px 16px;">
                 <img src="../../assets/menu.png" style="height: 40px;">
                 <p style="font-size: 20px; font-weight: bold; margin-left: 10px;">Menu</p>
             </button>
         </router-link>
-        <router-link v-if="userConnected === 'true'" style="justify-content: space-around;text-decoration: none;" to="/profil"  @click="showMenu = false">
+        <router-link v-if="userStore.userConnected" style="justify-content: space-around;text-decoration: none;" to="/profil"  @click="showMenu = false">
             <button class="btn-menu btn-menu-banner" id="btn-profil" style="padding: 8px 16px;">
                 <img src="../../assets/profil.png" style="height: 40px;">
                 <p style="font-size: 20px; font-weight: bold; margin-left: 10px;">Profil</p>
@@ -57,20 +57,20 @@
 
 <script>
 import { searchMusic } from '@/api';
+import { useUserStore } from '@/stores/user'
 
 export default ({
     name: "MusicPage",
     data() {
         return {
-            device: 'Desktop',
+            device: 'Desktop', 
             showMenu: false,
-            userConnected : localStorage.getItem('userConnected')
+            userStore: useUserStore()
         }
     },
     methods: {
         connectedUserBanner() {
-            this.userConnected = true
-            console.log("switch", this.userConnected)
+            this.userStore.logout()
         },
         async searching() {
             let searchstr = document.getElementById('search').value
@@ -93,11 +93,7 @@ export default ({
     },
     mounted(){
         this.device = localStorage.getItem('device')
-        console.log("devicee", this.device)
-        console.log(localStorage.getItem('userConnected'))
-        console.log(typeof localStorage.getItem('userConnected'))
-        console.log(this.userConnected)
-        console.log(typeof this.userConnected)
+        console.log("userconnectd", this.userStore.userConnected)
     }
 });
 </script>

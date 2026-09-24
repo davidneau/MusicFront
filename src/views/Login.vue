@@ -19,9 +19,15 @@
 
 <script>
 import { login, getProfile } from '../api';
+import { useUserStore } from '@/stores/user'
 
 export default ({
     name: "LoginPage",
+    data(){
+        return {
+            userStore: useUserStore()
+        }
+    },
     methods: {
         enter(){
             let identifiant = document.getElementById("identifiant").value
@@ -34,9 +40,8 @@ export default ({
                 return getProfile();
             })
             .then(profile => {
-                this.$emit('switchUserConnected')
-                console.log(profile.data); // Affiche les infos de l'utilisateur
-                localStorage.setItem("userName", profile.data.user)
+                console.log(profile)
+                this.userStore.login()
                 this.$router.push('home')
             })
             .catch(err => {
