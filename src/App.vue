@@ -149,7 +149,7 @@ export default {
                         console.log("getSimilarTrack : ", response.data)
                         if (!Object.keys(response.data).includes("Ex")){
                             this.enchainement_music += 1
-                            if (this.enchainement_music == 5){
+                            if (this.enchainement_music == 10){
                                 alert("êtes vous encore là?");
                                 this.enchainement_music = 0;
                             }
