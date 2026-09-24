@@ -26,6 +26,7 @@
                 <button @click="resumeAfterHumanClick">OK</button>
             </div>
         </div>
+        <audio id="player" controls></audio>
     </div>
 </template>
 
@@ -58,6 +59,7 @@ export default {
         isPlaying: false,
         wasPlayingWhenHidden: false,
         backgroundResumeCount: 0,
+        audio: new Audio()
     };
   },
   
@@ -65,36 +67,30 @@ export default {
     window.vueInstance = this;
     this.loadYouTubeAPI();
 
-    // Tente de reprendre la lecture si YouTube pause au passage en arrière-plan
-    document.addEventListener('visibilitychange', this.handleVisibilityChange);
+    /*this.audio.src='https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
+    this.audio.lopp = true
 
-    // Lance l'audio silencieux au premier clic utilisateur
-    // (obligatoire sur mobile, autoplay bloqué sinon)
-    document.addEventListener('click', this.initSilentAudio, { once: true });
+    document.addEventListener("visibilitychange", async () => {
+        if (document.visibilityState === "hidden") {
+
+            // Arrêter YouTube
+            this.player.pauseVideo();
+            this.player.destroy();
+
+            // Continuer avec l'audio natif
+            try {
+                await this.audio.play();
+            } catch (e) {
+                console.error(e);
+            }
+        }
+    });*/
   },
 
-  beforeUnmount() {
-    clearTimeout(this.watchdogTimer);
-    clearTimeout(this.endTimer);
-
-    if (this.player && this.player.destroy) {
-      this.player.destroy();
-    }
+  unmounted(){
   },
 
   methods: {
-    // Lance un audio quasi-silencieux en boucle pour maintenir le focus audio
-    // Chrome mobile suspend les pages sans audio actif
-    initSilentAudio() {
-        if (this.silentAudio) return;
-        this.silentAudio = new Audio();
-        // WAV de silence minimal encodé en base64 (44 octets, 1 sample)
-        this.silentAudio.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA';
-        this.silentAudio.loop = true;
-        this.silentAudio.volume = 0.001;
-        this.silentAudio.play().catch(() => {});
-    },
-
     handleVisibilityChange() {
         if (document.hidden) {
             this.wasPlayingWhenHidden = this.isPlaying;
@@ -105,28 +101,6 @@ export default {
             setTimeout(() => this.player?.playVideo(), 300);
             }
         }
-    },
-
-    setupMediaSession(title, artist) {
-        if (!('mediaSession' in navigator)) return;
-
-        navigator.mediaSession.metadata = new MediaMetadata({
-            title: title || 'Musique',
-            artist: artist || '',
-        });
-
-        navigator.mediaSession.setActionHandler('play', () => {
-            this.player?.playVideo();
-        });
-        navigator.mediaSession.setActionHandler('pause', () => {
-            this.player?.pauseVideo();
-        });
-        navigator.mediaSession.setActionHandler('nexttrack', () => {
-            this.next();
-        });
-        navigator.mediaSession.setActionHandler('previoustrack', () => {
-            this.previous();
-        });
     },
 
     addSongToPlaylistYT(){
@@ -213,17 +187,6 @@ export default {
           onError: this.onPlayerError
         }
       });
-    },
-
-    startWatchdog(videoId) {
-      clearTimeout(this.watchdogTimer);
-
-      this.watchdogTimer = setTimeout(() => {
-        if (!this.hasStarted) {
-          console.warn("⚠️ Vidéo bloquée (probable 403) :", videoId);
-          this.skipToNext();
-        }
-      }, this.watchdogDelay);
     },
 
     onPlayerError(event) {
@@ -344,7 +307,6 @@ export default {
     playNewVideo(videoId, videoName = "", from, title = "", artist = "") {
       // CAS 2
       this.$emit('descriptionUpdate', { title, artist });
-      this.setupMediaSession(title, artist);   // ← ajouter
 
       if (!this.player) {
         console.error("Le lecteur YouTube n'est pas encore prêt.");
@@ -384,7 +346,6 @@ export default {
             });
 
             this.$emit('descriptionUpdate', { title, artist });
-            this.setupMediaSession(title, artist);   // ← ajouter
           })
           .catch((err) => {
             console.error("Erreur getSimilarTrack :", err);
