@@ -159,7 +159,9 @@ export default {
                             if (payload.id_clip && payload.id_clip != "Not found") this.playlist = [payload.id_clip]
                             else this.playlist = [payload.id]
 
-                            
+                            if (response.data.length != 0) {
+                                response.data.Result.forEach(track => this.playlist.push(track.id_yt))
+                            }
 
                             console.log("Playlist préchargée :", this.playlist)
                             this.$refs.youtubePlayer.autoPlayCount = 0
