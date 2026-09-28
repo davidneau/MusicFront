@@ -11,19 +11,19 @@
         </div>
         <div id="buttonsMenu">
             <router-link v-if="userStore.userConnected" style="justify-content: space-around;text-decoration: none;" to="/playlist">
-                <button class="btn-menu btn-menu-banner" id="btn-profil" style="padding: 8px 16px;">
+                <button id="Menu1" class="btn-menu btn-menu-banner" style="padding: 8px 16px;">
                     <img src="../../assets/playlist.png" style="height: 40px;">
                     <p v-if="device=='Desktop'" style="font-size: 20px; font-weight: bold; margin-left: 10px;">Playlist</p>
                 </button>
             </router-link>
             <router-link v-if="userStore.userConnected" to="/home" style="justify-content: space-around; text-decoration: none;">
-                <button class="btn-menu btn-menu-banner" id="btn-menu" style="padding: 8px 16px;">
+                <button id="Menu2" class="btn-menu btn-menu-banner" style="padding: 8px 16px;">
                     <img src="../../assets/menu.png" style="height: 40px;">
                     <p v-if="device=='Desktop'" style="font-size: 20px; font-weight: bold; margin-left: 10px;">Menu</p>
                 </button>
             </router-link>
             <router-link v-if="userStore.userConnected" style="justify-content: space-around;text-decoration: none;" to="/profil">
-                <button class="btn-menu btn-menu-banner" id="btn-profil" style="padding: 8px 16px;">
+                <button id="Menu3" class="btn-menu btn-menu-banner" style="padding: 8px 16px;">
                     <img src="../../assets/profil.png" style="height: 40px;">
                     <p v-if="device=='Desktop'" style="font-size: 20px; font-weight: bold; margin-left: 10px;">Profil</p>
                 </button>
@@ -34,7 +34,7 @@
         
     <div id="buttonsMenuMobile" class="flexCol" v-show="device == 'Mobile' && showMenu">
         <router-link v-if="userStore.userConnected" style="justify-content: space-around;text-decoration: none;" to="/playlist" @click="showMenu = false">
-            <button class="btn-menu btn-menu-banner" id="btn-profil" style="padding: 8px 16px;">
+            <button class="btn-menu btn-menu-banner" id="btn-playlist" style="padding: 8px 16px;">
                 <img src="../../assets/playlist.png" style="height: 40px;">
                 <p style="font-size: 20px; font-weight: bold; margin-left: 10px;">Playlist</p>
             </button>
@@ -58,6 +58,7 @@
 <script>
 import { searchMusic } from '@/api';
 import { useUserStore } from '@/stores/user'
+import { useTvStore } from '@/stores/tv'
 
 export default ({
     name: "MusicPage",
@@ -65,7 +66,8 @@ export default ({
         return {
             device: 'Desktop', 
             showMenu: false,
-            userStore: useUserStore()
+            userStore: useUserStore(),
+            tv: useTvStore(),
         }
     },
     methods: {
@@ -82,7 +84,24 @@ export default ({
             document.getElementById("logoSearch").style.display = "none"
             document.getElementById("searchResult").style.display = "flex"
             this.$emit('setSearchResult', musicVideos.data)
-        }
+        },
+        handleKey(event) {
+            if (event.key === 'ArrowRight') {
+                this.tv.right()
+            } 
+            if (event.key === 'ArrowLeft') {
+                this.tv.left()
+            } 
+            if (event.key == "ArrowDown"){
+                this.tv.down()
+            }
+            if (event.key == "ArrowUp"){
+                this.tv.up()
+            }
+            if (event.key == "Enter"){
+                this.tv.click()
+            }
+        }  
     },
     watch: {
         userConnected(newVal) {
@@ -94,6 +113,8 @@ export default ({
     mounted(){
         this.device = localStorage.getItem('device')
         console.log("userconnectd", this.userStore.userConnected)
+        document.getElementById("Menu1").focus()
+        window.addEventListener('keydown', this.handleKey)
     }
 });
 </script>
@@ -183,6 +204,12 @@ export default ({
 }
 
 .btn-menu:hover {
+  box-shadow:
+    0 0 12px 4px rgba(120, 220, 255, 1),
+    0 0 12px 12px rgba(240, 147, 251, 1);
+}
+
+.btn-menu:focus {
   box-shadow:
     0 0 12px 4px rgba(120, 220, 255, 1),
     0 0 12px 12px rgba(240, 147, 251, 1);

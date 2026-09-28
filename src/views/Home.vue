@@ -19,7 +19,7 @@
             
         </div>
         <div id="historique">
-            <div v-for="music in listMusicsHisto" :key="music">
+            <div v-for="(music, index) in listMusicsHisto" :key="music" :id="'Histo' + index" class="canBeFocused" tabindex="0">
                 <Music 
                     :title="music['Title']" 
                     :artist="music['Artist']"
@@ -56,7 +56,7 @@ export default ({
             loading: false,
             clicked: false,
             listMusicsHisto: Array(),
-            listMusicsSearch: Array()
+            listMusicsSearch: Array(),
         };
     },
     methods: {
@@ -71,7 +71,7 @@ export default ({
         },
         async setSearchResult(list) {
             this.listMusicsSearch = list
-        }
+        },
     },
     async mounted() {
         this.init()
@@ -91,6 +91,10 @@ html, body, #app, v-app, v-main{
 
 html{
     background-color: aliceblue;
+}
+
+.canBeFocused:focus {
+    background-color: pink;
 }
 
 .loaderLogo {
