@@ -119,7 +119,6 @@ export default {
                 this.$refs.youtubePlayer.playlistLoaded = false
                 document.getElementById("divPlayer").style.visibility = "visible"
                 document.getElementById("player").style.visibility = "visible"
-                if (payload.id_clip !== "Not found" && payload.id_clip !== null && payload.id_clip !== undefined) payload.id = payload.id_clip
             }
             if (payload.from == "search" || payload.from == "histo" || payload.from == "suggestion"){
                 this.agrandir()
@@ -128,12 +127,16 @@ export default {
                 if (payload.playlist) {
                     console.log("play playlist")
                     this.$refs.youtubePlayer.autoPlayCount = 0
+
+                    //shuffle
                     for (let i = payload.playlist.length - 1; i > 0; i--) {
                         const j = Math.floor(Math.random() * (i + 1));
                         [payload.playlist[i], payload.playlist[j]] = [payload.playlist[j], payload.playlist[i]];
                     }
                     
+                    document.getElementById("divPlayer").style.visibility = "visible"
                     this.$refs.youtubePlayer.player.loadPlaylist(payload.playlist);
+                    this.agrandir()
                 } else {
                     let videoName = this.$refs.youtubePlayer.getVideoName()
                     console.log("video", videoName)
@@ -144,7 +147,7 @@ export default {
                         //this.$refs.youtubePlayer.playNewVideo(payload.id, videoName, payload.from, payload.title, payload.artist)
                         this.$refs.youtubePlayer.setVideoName(payload.title + " " + payload.artist)
                     }
-                    getSimilarTrack(videoName)
+                    getSimilarTrack({"videoName":videoName, "id_yt":payload.id})
                     .then(async (response) => {
                         console.log("getSimilarTrack : ", response.data)
                         if (!Object.keys(response.data).includes("Ex")){
@@ -154,12 +157,12 @@ export default {
                                 this.enchainement_music = 0;
                             }
                             console.log("reponse de GetSimilarTrack : ", response.data)
-                            document.getElementById("youtube-player").style.visibility = "visible"
+                            document.getElementById("divPlayer").style.visibility = "visible"
                             //this.$refs.youtubePlayer.setVideoName(response.data.music["Title"] + " " + response.data.music["Artist"])
                             if (payload.id_clip && payload.id_clip != "Not found") this.playlist = [payload.id_clip]
                             else this.playlist = [payload.id]
 
-                            if (response.data.length != 0) {
+                            if (response.data.Result.length != 0) {
                                 response.data.Result.forEach(track => this.playlist.push(track.id_yt))
                             }
 

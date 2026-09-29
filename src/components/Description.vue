@@ -81,7 +81,7 @@ window.onYouTubeIframeAPIReady = function() {
 }
 
 .tabs-content{
-    width: 90%;
+    width: 100%;
     max-height: 92%;
 }
 

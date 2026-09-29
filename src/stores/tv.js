@@ -39,7 +39,7 @@ export const useTvStore = defineStore('tv', {
         }
       },
       click() {
-        document.getElementById(this.activeView + this.focusedIndex).children[0].children[0].click()
+        //document.getElementById(this.activeView + this.focusedIndex).children[0].children[0].click()
       }
   }
 })

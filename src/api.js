@@ -84,7 +84,7 @@ export function getMusic(Artist, Title) {
 
 export function searchMusic(searchStr) {
     console.log("searchMusic")
-    return API.get('/searchMusic/' + searchStr);
+    return API.get('/searchMusic/' + searchStr + '/' + Date.now());
 }
 
 export function loadHistorique() {
@@ -103,8 +103,8 @@ export function insertMusic(payload) {
 }
 
 export function getSimilarTrack(track) {
-    console.log("getSimilarTrack api :", track)
-    return API.get('/getSimilarTrack/' + track);
+    console.log("getSimilarTrack api :", track.videoName)
+    return API.get('/getSimilarTrack/' + track.videoName + '/' + track.id_yt + '/' + Date.now());
 }
 
 export const ON_ITEM_CLICK = Symbol("onItemClick")

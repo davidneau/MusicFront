@@ -143,7 +143,6 @@ export default ({
 
     .musicSugg{
         z-index: 2;
-        margin: 20px;
     }
 
     @media screen and (min-width: 428px)  {
@@ -151,6 +150,7 @@ export default ({
             background-color: rgba(0, 255, 255,0);
             flex: 0 0 25%;
             max-height: 100%;
+            max-width: 25%;
         }
 
         .tabs-header{

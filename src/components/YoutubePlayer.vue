@@ -26,7 +26,7 @@
                 <button @click="resumeAfterHumanClick">OK</button>
             </div>
         </div>
-        <audio id="player" controls></audio>
+        <audio style='visibility: hidden' id="player" controls></audio>
     </div>
 </template>
 
