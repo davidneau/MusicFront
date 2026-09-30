@@ -104,7 +104,7 @@ export function insertMusic(payload) {
 
 export function getSimilarTrack(track) {
     console.log("getSimilarTrack api :", track.videoName)
-    return API.get('/getSimilarTrack/' + track.videoName + '/' + track.id_yt + '/' + Date.now());
+    return API.get('/getSimilarTrack/' + track.videoName + '/' + track.id_yt + '/' + Date.now() + '/' + track.Title + '/' + track.Artist);
 }
 
 export const ON_ITEM_CLICK = Symbol("onItemClick")

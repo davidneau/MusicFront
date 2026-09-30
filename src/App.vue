@@ -147,7 +147,7 @@ export default {
                         //this.$refs.youtubePlayer.playNewVideo(payload.id, videoName, payload.from, payload.title, payload.artist)
                         this.$refs.youtubePlayer.setVideoName(payload.title + " " + payload.artist)
                     }
-                    getSimilarTrack({"videoName":videoName, "id_yt":payload.id})
+                    getSimilarTrack({"videoName":videoName, "id_yt":payload.id, "Title": payload.title, "Artist":payload.artist})
                     .then(async (response) => {
                         console.log("getSimilarTrack : ", response.data)
                         if (!Object.keys(response.data).includes("Ex")){
