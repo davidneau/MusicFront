@@ -1,24 +1,8 @@
 <template>
     <div class="loaderLogo" id="logoSearch"></div>
     <div id="home">
-        <div id="searchResult">
-            <div id="searchResultDiv" v-for="musicS in listMusicsSearch" :key="musicS">
-                <Music 
-                    :title="musicS['title']" 
-                    :artist="musicS['artist']"
-                    :album="musicS['album']"
-                    :videoId="musicS['id']"
-                    :id_clip="musicS['id_clip']"
-                    :img="musicS['img']"
-                    :btnATP=true
-                    from="search"
-                ></Music>
-            </div>
-        </div>
-        <div id="replay">
-            
-        </div>
         <div id="historique">
+            <h1 style="color: white;">Historique</h1>
             <div v-for="(music, index) in listMusicsHisto" :key="music" :id="'Histo' + index" class="canBeFocused" tabindex="0">
                 <Music 
                     :title="music['Title']" 
@@ -117,38 +101,6 @@ html{
   }
 }
 
-#searchResult {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
-    height: calc(100vh - 60px);
-    overflow-y: auto;     /* scroll vertical seulement si besoin */
-    overflow-x: hidden; 
-}
-
-.searchOneResult {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    width: 90%;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    border: 1px solid black;
-    border-radius: 15px;
-    padding: 10px;
-    background-color: #00ebff;
-    cursor: pointer;
-}
-
-.searchOneResult h2{
-    margin-left: 10px;
-}
-
-#searchDiv{
-    display: flex;
-    flex-direction: row;
-}
 
 .playerFullScreen{
     width: 100% !important;

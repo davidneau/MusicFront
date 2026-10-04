@@ -43,6 +43,8 @@ import { searchMusic, getMusic, ON_ITEM_CLICK, OPEN_AMTP_POPUP } from './api';
 import { getSimilarTrack } from './api';
 import { provide, getCurrentInstance  } from 'vue'
 import AddMusicToPlaylistPopup from '@/components/AddMusicToPlaylistPopup.vue';
+import { usePlaylistStore } from './stores/playlist.js';
+import { getPlaylist2 } from './api';
 
 export default {
     setup() {
@@ -74,12 +76,12 @@ export default {
         playlist: Array(),
         enchainement_music: 0,
         showAddPlaylistPopup: false,
-        music_id: ""
+        music_id: "",
+        playlistStore: usePlaylistStore()
     }),
     methods: {
         openAddMusicToPlaylistPopup(music_id){
-            this.music_id = music_id
-            this.$refs.amtp.loadPlaylist()
+            this.playlistStore.musicIdToAdd = music_id
             this.showAddPlaylistPopup= true
         },
         closePopup(){
@@ -298,7 +300,7 @@ export default {
             }
         },
     },
-    mounted(){        
+    async mounted(){        
         /* localStorage.setItem('userConnected', false);
         this.$refs.banner.userConnected = false */
         let largeurEcran = window.innerWidth || document.documentElement.clientWidth;
@@ -306,6 +308,12 @@ export default {
         console.log(largeurEcran)
         if (largeurEcran > 428) this.device = "Desktop"
         else this.device = "Mobile"
+
+        await getPlaylist2()
+        .then((response) => {
+            console.log("pl", response.data.Playlist)
+            this.playlistStore.playlists = response.data.Playlist
+        })
 
         localStorage.setItem('device', this.device)
 
@@ -337,6 +345,8 @@ body {
 
 #routerView{
     height: calc(100% - 60px);
+    max-height: 100%;
+    overflow: auto;
 }
 
 #btn-reduire{
@@ -427,13 +437,13 @@ body {
 
 .playlistPopup{
     position: absolute;
-    top: 50%;
+    top: 30%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -20%);
     background-color: green;
     border: 1px solid black;
     border-radius: 15px;
-    height: 10vh;
+    height: 80vh;
     width: 30vw;
     display: flex;
     flex-direction: row;

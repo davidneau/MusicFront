@@ -9,7 +9,7 @@
                 <h3>{{ album }}</h3>
             </div>
         </div>
-        <button v-if="btnATP" style="width: 20%;" @click="open_amtp_popup_fct">Add to playlist</button>
+        <button v-if="btnATP" class="toprightgreen" @click="open_amtp_popup_fct">+</button>
     </div>
 </template>
 
@@ -77,6 +77,17 @@ export default ({
 .mainDivMusic{
     width: 80%;
     justify-content: flex-start !important;
+}
+
+.toprightgreen{
+    position: relative;
+    top: -30px;
+    right: -30px;
+    aspect-ratio: 1.0;
+    border-radius: 50%;
+    color: white;
+    background-color: green;
+    cursor: pointer;
 }
 
 .flexRow{

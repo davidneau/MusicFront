@@ -7,6 +7,7 @@ import Profil from '@/views/Profil.vue'
 import SignUp from '../views/SignUp.vue'
 import SignIn from '../views/SignIn.vue'
 import Playlist from '@/views/Playlist.vue'
+import Search from '@/views/Search.vue'
 
 const routes = [
     { 
@@ -18,6 +19,12 @@ const routes = [
         path: '/home', 
         component: HomeView, 
         name: 'Home',
+        props: { userConnected: true }
+    },
+    { 
+        path: '/search', 
+        component: Search, 
+        name: 'search',
         props: { userConnected: true }
     },
     { 

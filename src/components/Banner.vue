@@ -56,7 +56,6 @@
 
 
 <script>
-import { searchMusic } from '@/api';
 import { useUserStore } from '@/stores/user'
 import { useTvStore } from '@/stores/tv'
 
@@ -76,14 +75,13 @@ export default ({
         },
         async searching() {
             let searchstr = document.getElementById('search').value
-            document.getElementById("historique").innerHTML = ""
-            document.getElementById("logoSearch").style.display = "block"
-            document.getElementById("searchResult").style.display = "none"
-            let musicVideos = await searchMusic(searchstr)
-            console.log(musicVideos.data)
-            document.getElementById("logoSearch").style.display = "none"
-            document.getElementById("searchResult").style.display = "flex"
-            this.$emit('setSearchResult', musicVideos.data)
+            this.$router.push('/search?search_str=' + searchstr)
+            this.$router.push({
+                name: 'search',
+                query: {
+                    'search_str': searchstr
+                }
+            })
         },
         handleKey(event) {
             if (event.key === 'ArrowRight') {
