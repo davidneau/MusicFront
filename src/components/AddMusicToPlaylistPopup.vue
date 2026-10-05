@@ -63,4 +63,29 @@ export default ({
     cursor: pointer;
 }
 
+.playlistPopup{
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -20%);
+    background-color: green;
+    border: 1px solid black;
+    border-radius: 15px;
+    height: 80vh;
+    width: 30vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    color: white
+}
+
+@media screen and (max-width: 428px)  {
+    .playlistPopup{
+        left: 10% !important;
+        width: 80% !important;
+        transform: translate(0, -20%) !important;
+    }
+}
+
 </style>
