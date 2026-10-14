@@ -435,22 +435,7 @@ body {
     color: white;
 }
 
-.playlistPopup{
-    position: absolute;
-    top: 30%;
-    left: 50%;
-    transform: translate(-50%, -20%);
-    background-color: green;
-    border: 1px solid black;
-    border-radius: 15px;
-    height: 80vh;
-    width: 30vw;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    color: white
-}
+
 
 @media screen and (min-width: 428px)  {
     #playerAndDesc{

@@ -5,14 +5,13 @@
             <button @click="createPlaylistPopup = true">Create Playlist</button>
         </div>
         <div id="playlists2" class="flexCol">
-            
             <div v-for="ind in titlePlaylists.length" class="playlistDiv flexRow" :key="ind">
                 <h2 style="margin-left: 10px; flex: 0 0 5%;">{{ titlePlaylists[ind-1] }}</h2>
                 <div class="flexCol">
                     <button @click="playPlaylist(listPlaylists[ind-1])">Play</button>
                     <button @click="playlistEditPopup=true; titlePlaylistEdit=titlePlaylists[ind-1]; playlistEdit=listPlaylists[ind-1]">Edit</button>
                 </div>
-                <div style="width: 90%;">
+                <div style="width: 90%;" v-if="userStore.userConnected == 'Desktop'">
                     <div class="playlist" v-if="Object.keys(listPlaylists[ind-1]).length !== 0">
                         <div v-for="music in listPlaylists[ind-1]" class="playlists" :key="music.Title">
                             <Music :title="music.Title" 
@@ -61,6 +60,7 @@
 <script>
 import { createPlaylist, getPlaylist2, createPlaylist2, deleteSongFromPlaylist } from '@/api';
 import Music from '../components/Music.vue';
+import { useUserStore } from '@/stores/user.js';
 
 export default ({
     name: "LoginPage",
@@ -75,7 +75,8 @@ export default ({
             titlePlaylists: Array(),
             listPlaylists: Array(),
             playlistEdit: [],
-            titlePlaylistEdit: ""
+            titlePlaylistEdit: "",
+            userStore: useUserStore(),
         }
     },
     methods: {
